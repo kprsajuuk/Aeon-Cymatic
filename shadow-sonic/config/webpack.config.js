@@ -1,5 +1,4 @@
 'use strict';
-
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
@@ -49,6 +48,8 @@ const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
+
+const { getThemeVariables } = require('antd/dist/theme');
 
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
@@ -504,52 +505,9 @@ module.exports = function(webpackEnv) {
                 options: {
                   lessOptions: {
                     modifyVars: {
+                      ...getThemeVariables({dark: true}),
                       'primary-color': '#e5ce00',
                       'link-color': '#1DA57A',
-                      'success-color': '#1DA57A',
-                      'heading-color': 'rgba(255, 255, 255, 0.85)',
-                      'text-color': 'rgba(255, 255, 255, 0.65)',
-                      'text-color-secondary': 'rgba(255, 255, 255, 0.5)',
-                      'text-color-inverse': '@white',
-                      'table-header-bg': '#1d1d1d',
-                      'table-body-sort-bg': 'fade(@white, 1%)',
-                      'icon-color-hover': 'fade(@white, 75%)',
-                      'heading-color': 'fade(@white, 85%)',
-                      'table-row-hover-bg': '#262626',
-                      'component-background': '#141414',
-                      'border-radius-base': '4px',
-                      'pagination-item-bg': 'transparent',
-                      'pagination-item-link-bg': 'transparent',
-                      'pagination-item-bg-active': 'transparent',
-                      'pagination-item-disabled-bg-active': 'fade(@white, 25%)',
-                      'pagination-item-disabled-color-active': '@black',
-                      'popover-customize-border-color': '#3a3a3a',
-                      'popover-background': '#1f1f1f',
-                      'menu-popup-bg': '@popover-background',
-                      'input-icon-color': 'fade(@white, 30%)',
-                      'table-expand-icon-bg': 'transparent',
-                      'select-background': 'transparent',
-                      'select-dropdown-bg': '@popover-background',
-                      'select-clear-background': '@component-background',
-                      'select-selection-item-bg': 'fade(@white, 8)',
-                      'select-selection-item-border-color': '@border-color-split',
-                      'dropdown-menu-bg': '@popover-background',
-                      'dropdown-menu-submenu-disabled-bg': 'transparent',
-                      'icon-color-hover': 'fade(@white, 75%)',
-                      'item-hover-bg': 'fade(@white, 8%)',
-                      'input-icon-hover-color': 'fade(@white, 85%)',
-                      'background-color-light': 'fade(@white, 4%)',
-                      'background-color-base': 'fade(@white, 8%)',
-                      "primary-1": "mix(color(~`colorPalette('@{primary-color}', 8) `), @component-background, 15%)",
-                      "primary-2": "mix(color(~`colorPalette('@{primary-color}', 7) `), @component-background, 25%)",
-                      "primary-3": "mix(@primary-color, @component-background, 30%)",
-                      "primary-4": "mix(@primary-color, @component-background, 45%)",
-                      'primary-5': "mix(@primary-color, @component-background, 65%)",
-                      'primary-6': "@primary-color",
-                      'primary-7': "mix(color(~`colorPalette('@{primary-color}', 5) `), @component-background, 90%)",
-                      'primary-8': "mix(color(~`colorPalette('@{primary-color}', 4) `), @component-background, 95%)",
-                      'primary-9': "mix(color(~`colorPalette('@{primary-color}', 3) `), @component-background, 97%)",
-                      'primary-10': "mix(color(~`colorPalette('@{primary-color}', 2) `), @component-background, 98%)",
                     },
                     javascriptEnabled: true,
                   },

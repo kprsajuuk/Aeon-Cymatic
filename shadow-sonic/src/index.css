@@ -12,6 +12,20 @@ code {
     monospace;
 }
 
+div::-webkit-scrollbar, body::-webkit-scrollbar, ul::-webkit-scrollbar{
+  width: 8px;
+  height: 8px;
+}
+div::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb, ul::-webkit-scrollbar-thumb{
+  background: rgba(153,153,153,0.6);
+  border-radius: 20px;
+  right: -100px;
+}
+div::-webkit-scrollbar-track, body::-webkit-scrollbar-track, ul::-webkit-scrollbar-track{
+  background: #ddd;
+  border-radius: 20px;
+}
+
 .flexColumn{
   display: flex;
   flex-direction: column;

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Axios from 'axios';
 import moment from 'moment';
 import Pagination from '@/settings/Pagination';
+import AudioControl from "./AudioControl";
 import { Button, Input, Table } from 'antd';
 import { DownloadBlob } from "@/utils";
 import style from './MusicList.module.scss';
@@ -90,8 +91,12 @@ export default class MusicList extends Component{
         ];
         return (
             <div className={style.musicList}>
-                <div className={style.search}>
+                <div className={style.header}>
                     <Search className={style.input} onSearch={this.onSearch}/>
+                    <div className={style.player}>
+                        <AudioControl/>
+                        <audio src={this.state.audio} type="audio/mpeg" controls="controls"></audio>
+                    </div>
                 </div>
                 <div className={style.table}>
                     <Table dataSource={this.state.musicList}
@@ -109,9 +114,6 @@ export default class MusicList extends Component{
                     scroll={{y:window.innerHeight-268}}
                     size='middle'
                     columns={columns} rowKey='id'/>
-                </div>
-                <div className={style.player}>
-                    <audio src={this.state.audio} type="audio/mpeg" controls="controls"></audio>
                 </div>
             </div>
         )

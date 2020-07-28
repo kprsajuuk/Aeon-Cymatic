@@ -2,15 +2,17 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  .search{
+  .header{
+    display: flex;
+    justify-content: space-between;
     .input{
       width: 200px;
+    }
+    .player{
+
     }
   }
   .table{
     height: 100%;
-  }
-  .player{
-    flex-shrink: 0;
   }
 }
