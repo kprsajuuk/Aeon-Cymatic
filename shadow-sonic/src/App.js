@@ -1,6 +1,5 @@
 import React from 'react';
-import logo from './logo.svg';
-import MusicList from '@/pages/music/MusicList';
+import Main from '@/pages/main/Main';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import './App.css';
 
@@ -9,7 +8,7 @@ function App() {
     <div className="App">
       <Router>
         <Switch>
-            <Route exact path={['/']} component={MusicList}/>
+            <Route exact path={['/']} component={Main}/>
         </Switch>
       </Router>
     </div>
