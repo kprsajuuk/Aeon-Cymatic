@@ -19,9 +19,10 @@ export default class MusicList extends Component{
     };
 
     onSearch = (keyword) => {
-        this.setState({keyword: keyword}, () => {
-            this.fetchMusicList();
-        })
+        this.setState({
+            keyword: keyword,
+            pagination: {...this.state.pagination, current: 1}
+        }, () => {this.fetchMusicList()})
     }
 
     onAlbumClick = (id) => {
