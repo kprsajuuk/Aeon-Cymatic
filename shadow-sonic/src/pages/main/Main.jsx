@@ -10,8 +10,10 @@ export default class Main extends Component{
         return (
             <div className={style.main}>
             	<div className={style.topBar}></div>
-            	<div className={style.content}>
-            		<MusicList/>
+            	<div className={style.container}>
+                    <div className={style.content}>
+                        <MusicList/>
+                    </div>
             	</div>
             </div>
         )

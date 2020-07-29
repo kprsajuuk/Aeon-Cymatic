@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 import Axios from 'axios';
-import moment from 'moment';
 import Pagination from '@/settings/Pagination';
 import AudioControl from "./AudioControl";
-import { Button, Input, Table } from 'antd';
-import { DownloadBlob } from "@/utils";
+import { Button, Input, Table, notification } from 'antd';
+import { DownloadBlob, GetDuration } from "@/utils";
 import style from './MusicList.module.scss';
 
 const { Search } = Input;
@@ -16,24 +15,17 @@ export default class MusicList extends Component{
         keyword: '',
         pagination: Pagination(),
         audio: '',
-    };
-
-    getDuration = (str) => {
-        let duration = moment.duration(str);
-        let hour = duration.hours() > 1 ? duration.hours() + 'h' : '';
-        let minute = duration.minutes() + ':';
-        let second = duration.seconds().toString();
-        if (minute.length < 3){minute = '0' + minute}
-        if (second.length < 2){second = '0' + second}
-        return hour + minute + second;
+        audioData: {},
     };
 
     onSearch = (keyword) => {
-        console.log(window.innerHeight);
-        console.log(window.innerHeight-152);
         this.setState({keyword: keyword}, () => {
             this.fetchMusicList();
         })
+    }
+
+    onAlbumClick = (id) => {
+
     }
 
     fetchMusicList = () => {
@@ -42,25 +34,35 @@ export default class MusicList extends Component{
         let offset = (pagination.current - 1) * limit;
         this.setState({loading: true})
         Axios.get('/search', {params: {keyword: keyword, limit: limit, offset: offset}})
-            .then(res => {
-                this.setState({
-                    musicList: res.data.result.songs,
-                    pagination: {...this.state.pagination, total: res.data.result.songCount},
-                    loading: false,
-                })
-
+            .then(res => { 
+                this.setState({loading: false})
+                if (res.data.success){
+                    this.setState({
+                        musicList: res.data.result.songs,
+                        pagination: {...this.state.pagination, total: res.data.result.songCount},
+                    })
+                } else {
+                    notification.error({message: '网络错误 获取失败', duration: null})
+                }
             })
     };
+
+    fetchMusicByAlbum = () => {
+
+    }
 
     fetchPlay = (id) => {
         this.setState({loading: true})
         Axios.get('/download', {
             params: {id: id},
             responseType: 'blob'
-        }).then(res => {
-            let blob = new Blob([res.data]);
-            let objectUrl = URL.createObjectURL(blob);
-            this.setState({audio: objectUrl, loading: false})
+        }).then(res => { 
+            this.setState({loading: false})
+            if (res.data.size){
+                this.setState({audio: res})
+            } else {
+                notification.error({message: '网络错误 获取失败', duration: null})
+            }
         })
     };
 
@@ -69,22 +71,30 @@ export default class MusicList extends Component{
         Axios.get('/download', {
             params: {id: id},
             responseType: 'blob'
-        }).then(res => {
+        }).then(res => { 
             this.setState({loading: false})
-            DownloadBlob(res, name+'.mp3');
+            if (res.data.size){
+                DownloadBlob(res, name+'.mp3');
+            } else {
+                notification.error({message: '网络错误 获取失败', duration: null})
+            }
         })
     };
 
     render() {
         const columns = [
             {title: '标题', dataIndex: 'name', key: 'name'},
-            {title: '时长', dataIndex: 'duration', key: 'duration', width: 75, render: (text) => (<div>{this.getDuration(text)}</div>)},
+            {title: '时长', dataIndex: 'duration', key: 'duration', width: 75, render: (text) => (<div>{GetDuration(text)}</div>)},
             {title: '作者', dataIndex: 'artist', key: 'artist', render: (text, record) => (<div>{record.artists[0].name}</div>)},
-            {title: '专辑', dataIndex: 'album', key: 'album', render: (text, record) => (<div>《{record.album.name}》</div>)},
+            {title: '专辑', dataIndex: 'album', key: 'album', 
+                render: (text, record) => (<div onClick={()=>this.onAlbumClick(record.album.id)}>《{record.album.name}》</div>)},
             {title: '操作', dataIndex: 'id', key: 'action', width: 150,
                 render: (text, record) => (
                     <div>
-                        <Button type='link' onClick={()=>this.fetchPlay(record.id)}>播放</Button>
+                        <Button type='link' 
+                                onClick={()=>{this.fetchPlay(record.id); this.setState({audioData: record})}}>
+                                播放
+                        </Button>
                         <Button type='link' onClick={()=>this.fetchDownload(record.id, record.name)}>下载</Button>
                     </div>
                 )},
@@ -94,12 +104,12 @@ export default class MusicList extends Component{
                 <div className={style.header}>
                     <Search className={style.input} onSearch={this.onSearch}/>
                     <div className={style.player}>
-                        <AudioControl/>
-                        <audio src={this.state.audio} type="audio/mpeg" controls="controls"></audio>
+                        <AudioControl src={this.state.audio} audioData={this.state.audioData}/>
                     </div>
                 </div>
                 <div className={style.table}>
                     <Table dataSource={this.state.musicList}
+                    id='musicListTable'
                     loading={this.state.loading}
                     pagination={this.state.pagination}
                     onChange={(pagination) => {

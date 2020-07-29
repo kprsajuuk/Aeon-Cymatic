@@ -22,7 +22,7 @@ div::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb, ul::-webkit-scrollb
   right: -100px;
 }
 div::-webkit-scrollbar-track, body::-webkit-scrollbar-track, ul::-webkit-scrollbar-track{
-  background: #ddd;
+  background: #141414;
   border-radius: 20px;
 }
 

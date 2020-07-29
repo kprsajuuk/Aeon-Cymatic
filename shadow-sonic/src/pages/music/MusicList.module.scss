@@ -5,11 +5,16 @@
   .header{
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
     .input{
       width: 200px;
+      min-width: 200px;
+      flex-shrink: 0;
+      margin-bottom: 12px;
     }
     .player{
-
+      margin-bottom: 12px;
     }
   }
   .table{

@@ -11,11 +11,18 @@
 	    background: #141414;
 	    flex-shrink: 0;
 	}
-	.content{
+	.container{
 		height: 100%;
 		width: 100%;
-		max-width: 1200px;
-		margin: 0 auto;
-		overflow: hidden;
+		overflow: auto;
+		
+		.content{
+			height: 100%;
+			width: 100%;
+			max-width: 1200px;
+			min-width: 600px;
+			padding: 0 20px;
+			margin: 0 auto;
+	}
 	}
 }

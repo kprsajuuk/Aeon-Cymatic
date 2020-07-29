@@ -507,7 +507,7 @@ module.exports = function(webpackEnv) {
                     modifyVars: {
                       ...getThemeVariables({dark: true}),
                       'primary-color': '#e5ce00',
-                      'link-color': '#1DA57A',
+                      'link-color': '#e5ce00',
                     },
                     javascriptEnabled: true,
                   },
