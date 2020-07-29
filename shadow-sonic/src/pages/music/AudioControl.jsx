@@ -39,14 +39,14 @@ export default class AudioControl extends Component{
                         paused: false
                     })
                 }
-            }, 100)
+            }, 100);
             this.audio.removeEventListener('timeupdate', this.onTimeUpdate);
             this.audio.addEventListener('timeupdate', this.onTimeUpdate);
             this.progressBar.onmousedown = this.onDrageProgress;
             this.audio.addEventListener('ended', this.onAudioEnd);
         })
         
-    }
+    };
 
     onTimeUpdate = () => {
         let { current } = this.state;
@@ -54,7 +54,7 @@ export default class AudioControl extends Component{
         if (newCurrent !== current){
             this.setState({current: newCurrent})
         }
-    }
+    };
 
     onPlay = () => {
         if (this.audio.paused){
@@ -63,13 +63,13 @@ export default class AudioControl extends Component{
             this.audio.pause();
         }
         this.setState({paused: this.audio.paused});
-    }
+    };
 
     onVolumeChange = (v) => {
         this.setState({volume: v}, () => {
             this.audio.volume = this.state.volume / 100;
         })
-    }
+    };
 
     onDrageProgress = (event) => {
         event.preventDefault();
@@ -78,12 +78,12 @@ export default class AudioControl extends Component{
         this.audio.currentTime = this.audio.duration * event.offsetX / totalWidth;
         this.progressBar.onmousemove = (e => {
             this.audio.currentTime = this.audio.duration * e.offsetX / totalWidth
-        })
+        });
         document.body.onmouseup = () => {
             this.progressBar.onmousemove = null;
             document.body.onmouseup = null;
         }
-    }
+    };
 
     onAudioEnd = () => {
         this.audio.currentTime = 0;
@@ -93,11 +93,11 @@ export default class AudioControl extends Component{
             this.audio.pause();
             this.setState({paused: true})
         }
-    }
+    };
 
     onDownload = () => {
         DownloadBlob(this.props.src, this.props.audioData.name + '.mp3');
-    }
+    };
 
     render() {
         const { paused, duration, current, volume, audioSource, actMenuVisible } = this.state;
@@ -113,18 +113,18 @@ export default class AudioControl extends Component{
                     </Space>
                 </Menu.Item>
             </Menu>
-        )
+        );
         const Volume = (
             <div className={style.volumePop}>
                 <Slider className={style.slider} vertical value={volume} onChange={this.onVolumeChange}/>
             </div>
-        )
+        );
 
         return (
             <Space className={style.audioControl}>
                 <audio id="audioTag" src={audioSource} ></audio>
                 <div>
-                    <Button shape="circle" onClick={this.onPlay} size='middle' disabled={!audioSource}
+                    <Button shape="circle" onClick={this.onPlay} size='small' disabled={!audioSource}
                             icon={paused ? <CaretRightOutlined /> : <PauseOutlined />} />
                 </div>
                 <div>{GetDuration(current, 'seconds')}/{GetDuration(duration, 'seconds')}</div>
@@ -137,14 +137,13 @@ export default class AudioControl extends Component{
                 </div>
                 <div>
                     <Popover placement="bottom" content={Volume}>
-                        <SoundOutlined />
+                        <SoundOutlined style={{cursor: 'pointer'}}/>
                     </Popover>
-                    
                 </div>
                 <div>
                     <Dropdown overlay={ActMenu} visible={actMenuVisible}
                             onVisibleChange={(v)=>this.setState({actMenuVisible: v})}>
-                        <Button>更多</Button>
+                        <Button size='small'>更多</Button>
                     </Dropdown>
                 </div>
             </Space>

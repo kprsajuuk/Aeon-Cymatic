@@ -1,4 +1,4 @@
-.musicList{
+.music{
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -7,17 +7,30 @@
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+    margin-bottom: 12px;
     .input{
       width: 200px;
       min-width: 200px;
       flex-shrink: 0;
-      margin-bottom: 12px;
-    }
-    .player{
-      margin-bottom: 12px;
     }
   }
   .table{
     height: 100%;
+  }
+}
+
+.album{
+  display: flex;
+  .info{
+    flex-shrink: 0;
+    width: 200px;
+    padding-right: 12px;
+    .emphasize{
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .item{
+      width: 100%;
+    }
   }
 }

@@ -1,53 +1,42 @@
 import React, {Component} from 'react';
 import Axios from 'axios';
+import moment from 'moment';
 import Pagination from '@/settings/Pagination';
-import { Button, Input, Table, notification } from 'antd';
+import { Button, Table, notification } from 'antd';
 import { GetDuration } from "@/utils";
-import style from './Music.module.scss';
+import style from "./Music.module.scss";
 
-const { Search } = Input;
-
-export default class MusicList extends Component{
+export default class AlbumList extends Component{
     state = {
         loading: false,
-        musicList: [],
-        keyword: '',
-        audio: '',
         pagination: Pagination(),
-        audioData: {},
+        musicList: [],
+        albumInfo: {},
     };
 
-    onSearch = (keyword) => {
-        this.setState({
-            keyword: keyword,
-            pagination: {...this.state.pagination, current: 1}
-        }, () => {this.fetchMusicList()})
-    };
-
-    onAlbumClick = (id) => {
-        this.props.onAlbum(id);
-    };
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.albumId !== prevProps.albumId){
+            this.fetchAlbumDetail();
+        }
+    }
 
     onPlay = (record) => {
-        this.props.onPlay(record.id, record)
+        this.props.onPlay(record.id, record.name)
     };
 
     onDownload = (record) => {
         this.props.onDownload(record.id, record.name)
     };
 
-    fetchMusicList = () => {
-        const { pagination, keyword } = this.state;
-        let limit = pagination.pageSize;
-        let offset = (pagination.current - 1) * limit;
-        this.setState({loading: true})
-        Axios.get('/search', {params: {keyword: keyword, limit: limit, offset: offset}})
-            .then(res => { 
+    fetchAlbumDetail = () => {
+        this.setState({loading: true});
+        Axios.get('/albumMusic', {params: {id: this.props.albumId}})
+            .then(res => {
                 this.setState({loading: false});
                 if (res.data.success){
                     this.setState({
-                        musicList: res.data.result.songs,
-                        pagination: {...this.state.pagination, total: res.data.result.songCount},
+                        musicList: res.data.songs,
+                        albumInfo: res.data.album,
                     })
                 } else {
                     notification.error({message: '网络错误 获取失败', duration: null})
@@ -57,15 +46,11 @@ export default class MusicList extends Component{
 
     render() {
         const loading = this.props.loading || this.state.loading;
+        const { albumInfo } = this.state;
         const columns = [
             {title: '标题', dataIndex: 'name', key: 'name'},
-            {title: '时长', dataIndex: 'duration', key: 'duration', width: 75, render: (text) => (<div>{GetDuration(text)}</div>)},
-            {title: '作者', dataIndex: 'artist', key: 'artist', render: (text, record) => (<div>{record.artists[0].name}</div>)},
-            {title: '专辑', dataIndex: 'album', key: 'album', 
-                render: (text, record) => (
-                    <div className='link' onClick={()=>this.onAlbumClick(record.album.id)}>
-                        《{record.album.name}》</div>
-                )},
+            {title: '时长', dataIndex: 'dt', key: 'duration', width: 75, render: (text) => (<div>{GetDuration(text)}</div>)},
+            {title: '作者', dataIndex: 'artist', key: 'artist', render: (text, record) => (<div>{record.ar[0].name}</div>)},
             {title: '操作', dataIndex: 'id', key: 'action', width: 150,
                 render: (text, record) => (
                     <div>
@@ -74,12 +59,18 @@ export default class MusicList extends Component{
                     </div>
                 )},
         ];
+
         return (
-            <div className={style.table}>
-                <div className={style.header}>
-                    <Search className={style.input} onSearch={this.onSearch} size='small'/>
-                </div>
+            <div className={style.album}>
+                {this.props.albumId && <div className={style.info}>
+                    <img className={style.item} src={albumInfo.blurPicUrl} alt='logo'/>
+                    <div className={style.emphasize}>{albumInfo.name}</div>
+                    <div>歌手: {albumInfo.artist ? albumInfo.artist.name : ''}</div>
+                    <div>公司: {albumInfo.company}</div>
+                    <div>发行时间: {moment(albumInfo.publishTime).format('YYYY-MM-DD')}</div>
+                </div>}
                 <Table dataSource={this.state.musicList}
+                       id='musicListTable'
                        loading={loading}
                        pagination={this.state.pagination}
                        onChange={(pagination) => {
@@ -89,10 +80,10 @@ export default class MusicList extends Component{
                                    current: pagination.current,
                                    pageSize: pagination.pageSize
                                }
-                           }, () => {this.fetchMusicList()})
+                           })
                        }}
                        scroll={{y:window.innerHeight-268}}
-                       size='middle'
+                       size='small'
                        columns={columns} rowKey='id'/>
             </div>
         )

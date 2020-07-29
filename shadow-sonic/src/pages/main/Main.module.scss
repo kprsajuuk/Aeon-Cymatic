@@ -6,23 +6,25 @@
 	overflow: hidden;
 	.topBar{
 		height: 60px;
-	    margin-bottom: 12px;
 	    flex-shrink: 0;
 	    background: #141414;
 	    flex-shrink: 0;
+		.content{
+			display: flex;
+			justify-content: space-between;
+		}
 	}
 	.container{
 		height: 100%;
 		width: 100%;
 		overflow: auto;
-		
-		.content{
-			height: 100%;
-			width: 100%;
-			max-width: 1200px;
-			min-width: 600px;
-			padding: 0 20px;
-			margin: 0 auto;
 	}
+	.content{
+		height: 100%;
+		width: 100%;
+		max-width: 1200px;
+		min-width: 600px;
+		padding: 0 20px;
+		margin: 0 auto;
 	}
 }

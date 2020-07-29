@@ -32,3 +32,8 @@ div::-webkit-scrollbar-track, body::-webkit-scrollbar-track, ul::-webkit-scrollb
   height: 100%;
   overflow: hidden;
 }
+
+.link{
+  cursor: pointer;
+  color: #e5ce00;
+}

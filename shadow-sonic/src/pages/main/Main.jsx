@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import MusicList from '@/pages/music/MusicList';
+import Music from '@/pages/music/Music';
 import style from './Main.module.scss';
 
 export default class Main extends Component{
@@ -9,10 +9,13 @@ export default class Main extends Component{
     render() {
         return (
             <div className={style.main}>
-            	<div className={style.topBar}></div>
+            	<div className={style.topBar}>
+                    <div className={style.content}>
+                    </div>
+                </div>
             	<div className={style.container}>
                     <div className={style.content}>
-                        <MusicList/>
+                        <Music/>
                     </div>
             	</div>
             </div>
