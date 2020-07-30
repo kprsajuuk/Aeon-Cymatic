@@ -1,14 +1,20 @@
 import React, {Component} from 'react';
-import { Input, Button, Space } from 'antd';
+import { Input, Button, Select } from 'antd';
+import { connect } from 'react-redux';
+import { searchMusic } from "@/redux/action";
 import Axios from 'axios';
 import Music from '@/pages/music/Music';
 import style from './Main.module.scss';
 
 const { Search } = Input;
+const { Option } = Select;
 
-export default class Main extends Component{
+const mapStateToProps = state => {return state};
+
+class Main extends Component{
     state = {
         keyword: '',
+        searchType: 'net',
     };
 
     onTest = () => {
@@ -16,24 +22,31 @@ export default class Main extends Component{
             .then(res => { 
                 console.log(res);
             })
+    };
+
+    componentDidMount() {
     }
 
-    onSearch = (keyword) => {
-        this.props.history.push('?keyword='+keyword)
-        this.setState({keyword: ''})
-    }
+    onSearch = () => {
+        const { keyword, searchType } = this.state;
+        this.props.dispatch(searchMusic(keyword, searchType))
+    };
 
     render() {
         return (
             <div className={style.main}>
             	<div className={style.topBar}>
                     <div className={style.content}>
-                        <Space className={style.left}>
+                        <div className={style.left}>
                             <div className={style.title}>AEON</div>
+                            <Select defaultValue='net' onChange={(v)=>this.setState({searchType: v})} className={style.select}>
+                                <Option value='net'>网易云</Option>
+                                <Option value='qq'>qq音乐</Option>
+                            </Select>
                             <Search onSearch={this.onSearch} value={this.state.keyword}
                                     onChange={(v)=>this.setState({keyword: v.target.value})}/>
                             <Button onClick={this.onTest}>test</Button>
-                        </Space>
+                        </div>
                     </div>
                 </div>
             	<div className={style.container}>
@@ -45,3 +58,5 @@ export default class Main extends Component{
         )
     }
 }
+
+export default connect(mapStateToProps)(Main)

@@ -69,6 +69,7 @@ export default class Music extends Component{
                         onChange={(v)=>this.setState({tab: v})}>
                     <TabPane tab="歌曲" key="music" forceRender>
                         <MusicList loading={loading}
+                                   onUpdate={()=>this.setState({tab: 'music'})}
                                    onPlay={this.fetchPlay} onDownload={this.fetchDownload} 
                                    onAlbum={this.onAlbum} onArtist={this.onArtist}/>
                     </TabPane>

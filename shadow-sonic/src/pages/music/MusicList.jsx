@@ -1,27 +1,37 @@
 import React, {Component} from 'react';
+import { Button, Table, notification } from 'antd';
+import { connect } from 'react-redux';
 import Axios from 'axios';
 import Pagination from '@/settings/Pagination';
-import { Button, Input, Table, notification } from 'antd';
 import { GetDuration } from "@/utils";
 import style from './Music.module.scss';
 
-const { Search } = Input;
+const mapStateToProps = state => {return state};
 
-export default class MusicList extends Component{
+class MusicList extends Component{
     state = {
         loading: false,
         musicList: [],
         keyword: '',
+        type: 'net',
         audio: '',
         pagination: Pagination(),
         audioData: {},
     };
 
-    onSearch = (keyword) => {
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.searchMusic !== prevProps.searchMusic && this.props.searchMusic){
+            this.onSearch(this.props.searchMusic.searchKey, this.props.searchMusic.searchType);
+        }
+    }
+
+    onSearch = (keyword, type) => {
         this.setState({
             keyword: keyword,
+            type: type,
             pagination: {...this.state.pagination, current: 1}
         }, () => {this.fetchMusicList()})
+        this.props.onUpdate();
     };
 
     onAlbumClick = (id) => {
@@ -41,11 +51,11 @@ export default class MusicList extends Component{
     };
 
     fetchMusicList = () => {
-        const { pagination, keyword } = this.state;
+        const { pagination, keyword, type } = this.state;
         let limit = pagination.pageSize;
         let offset = (pagination.current - 1) * limit;
         this.setState({loading: true})
-        Axios.get('/search', {params: {keyword: keyword, limit: limit, offset: offset}})
+        Axios.get('/search', {params: {sourceType: type, keyword: keyword, limit: limit, offset: offset}})
             .then(res => { 
                 this.setState({loading: false});
                 if (res.data.success){
@@ -84,9 +94,6 @@ export default class MusicList extends Component{
         ];
         return (
             <div className={style.table}>
-                <div className={style.header}>
-                    <Search className={style.input} onSearch={this.onSearch} size='small'/>
-                </div>
                 <Table dataSource={this.state.musicList}
                        loading={loading}
                        pagination={this.state.pagination}
@@ -106,3 +113,5 @@ export default class MusicList extends Component{
         )
     }
 }
+
+export default connect(mapStateToProps)(MusicList)

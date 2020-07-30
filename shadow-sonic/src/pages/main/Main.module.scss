@@ -15,10 +15,16 @@
 			align-items: center;
 			.left{
 				display: flex;
+				align-items: center;
+				.select{
+					width: 95px;
+					flex-shrink: 0;
+				}
 			}
 			.title{
 				font-size: 32px;
 				font-weight: bold;
+				margin-right: 12px;
 			}
 		}
 	}
