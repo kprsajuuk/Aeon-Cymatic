@@ -64,7 +64,7 @@ export default class MusicList extends Component{
         const columns = [
             {title: '歌曲名', dataIndex: 'name', key: 'name'},
             {title: '时长', dataIndex: 'duration', key: 'duration', width: 75, render: (text) => (<div>{GetDuration(text)}</div>)},
-            {title: '作者', dataIndex: 'artist', key: 'artist', 
+            {title: '歌手', dataIndex: 'artist', key: 'artist', 
                 render: (text, record) => (
                     <span className='link' onClick={()=>this.onArtistClick(record.artists[0].id)}>
                         {record.artists[0].name}</span>

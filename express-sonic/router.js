@@ -1,5 +1,9 @@
 var indexRouter = require('./routes/index');
+var search = require('./routes/search');
+var test = require('./routes/test');
 
 module.exports = function (app) {
-    app.use('/', indexRouter)
+	search(app);
+	indexRouter(app);
+	test(app);
 };

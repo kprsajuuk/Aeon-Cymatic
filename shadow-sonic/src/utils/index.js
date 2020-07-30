@@ -23,7 +23,23 @@ const GetDuration = (str, unit='milliseconds') => {
     return hour + minute + second;
 }
 
+const getParams = (url) => {
+    try {
+        url = url.match(/\?([^#]+)/)[1];
+        url = decodeURIComponent(url);
+        let obj = {}, arr = url.split('&');
+        for (let i = 0; i < arr.length; i++) {
+            let subArr = arr[i].split('=');
+            obj[subArr[0]] = subArr[1];
+        }
+        return obj;
+    } catch (err) {
+        return null;
+    }
+};
+
 export {
     DownloadBlob,
-    GetDuration
+    GetDuration,
+    getParams
 }

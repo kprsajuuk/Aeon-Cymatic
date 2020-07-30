@@ -56,7 +56,7 @@ export default class AlbumList extends Component{
         const columns = [
             {title: '歌曲名', dataIndex: 'name', key: 'name'},
             {title: '时长', dataIndex: 'dt', key: 'duration', width: 75, render: (text) => (<div>{GetDuration(text)}</div>)},
-            {title: '作者', dataIndex: 'artist', key: 'artist', 
+            {title: '歌手', dataIndex: 'artist', key: 'artist', 
                 render: (text, record) => (
                     <span className='link' onClick={()=>this.onArtistClick(record.ar[0].id)}>{record.ar[0].name}</span>
                 )},

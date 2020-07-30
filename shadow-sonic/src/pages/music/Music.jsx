@@ -78,10 +78,13 @@ export default class Music extends Component{
                                    onPlay={this.fetchPlay}
                                    onDownload={this.fetchDownload} onArtist={this.onArtist}/>
                     </TabPane>
-                    <TabPane tab="作者" key="artist" forceRender>
+                    <TabPane tab="歌手" key="artist" forceRender>
                         <ArtistList loading={loading} artistId={this.state.artistId}
                                     onPlay={this.fetchPlay} onDownload={this.fetchDownload}
                                     onAlbum={this.onAlbum}/>
+                    </TabPane>
+                    <TabPane tab="播放列表" key="play" forceRender>
+                        播放列表
                     </TabPane>
                 </Tabs>
             </div>

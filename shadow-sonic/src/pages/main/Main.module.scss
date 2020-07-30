@@ -13,6 +13,9 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
+			.left{
+				display: flex;
+			}
 			.title{
 				font-size: 32px;
 				font-weight: bold;
