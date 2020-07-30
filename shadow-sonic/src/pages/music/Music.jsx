@@ -3,6 +3,7 @@ import Axios from 'axios';
 import AudioControl from "./AudioControl";
 import MusicList from "./MusicList";
 import AlbumList from "./AlbumList";
+import ArtistList from "./ArtistList";
 import { notification, Tabs } from 'antd';
 import { DownloadBlob } from "@/utils";
 import style from './Music.module.scss';
@@ -16,11 +17,16 @@ export default class Music extends Component{
         audio: '',
         audioData: {},
         albumId: '',
+        artistId: '',
     };
 
     onAlbum = (id) => {
         this.setState({tab: 'album', albumId: id});
     };
+
+    onArtist = (id) => {
+        this.setState({tab: 'artist', artistId: id})
+    }
 
     fetchPlay = (id, record) => {
         this.setState({loading: true, audioData: record});
@@ -59,19 +65,23 @@ export default class Music extends Component{
         );
         return (
             <div className={style.music}>
-                <Tabs activeKey={this.state.tab} tabBarExtraContent={TabExtra} onChange={(v)=>this.setState({tab: v})}>
+                <Tabs activeKey={this.state.tab} tabBarExtraContent={TabExtra} 
+                        onChange={(v)=>this.setState({tab: v})}>
                     <TabPane tab="歌曲" key="music" forceRender>
                         <MusicList loading={loading}
-                                   onPlay={this.fetchPlay} onDownload={this.fetchDownload} onAlbum={this.onAlbum}/>
+                                   onPlay={this.fetchPlay} onDownload={this.fetchDownload} 
+                                   onAlbum={this.onAlbum} onArtist={this.onArtist}/>
                     </TabPane>
                     <TabPane tab="专辑" key="album" forceRender>
                         <AlbumList loading={loading}
                                    albumId={this.state.albumId}
                                    onPlay={this.fetchPlay}
-                                   onDownload={this.fetchDownload} />
+                                   onDownload={this.fetchDownload} onArtist={this.onArtist}/>
                     </TabPane>
                     <TabPane tab="作者" key="artist" forceRender>
-                        Content of Tab Pane 3
+                        <ArtistList loading={loading} artistId={this.state.artistId}
+                                    onPlay={this.fetchPlay} onDownload={this.fetchDownload}
+                                    onAlbum={this.onAlbum}/>
                     </TabPane>
                 </Tabs>
             </div>

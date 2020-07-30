@@ -37,6 +37,34 @@ router.get('/albumMusic', function(req, response, next) {
     })
 })
 
+router.get('/artistMusic', function(req, response, next) {
+	let id = req.query.id;
+	request(encodeURI(`http://musicapi.leanapp.cn/artists?id=${id}`), function (err, res, body) {
+        if (res && res.statusCode === 200){
+        	let result = JSON.parse(body);
+            result.success = true;
+            response.send(result);
+        } else {
+            response.send({success: false});
+        }
+    })
+})
+
+router.get('/artistAlbum', function(req, response, next) {
+	let id = req.query.id;
+	let limit = req.query.limit || 10;
+	let offset = req.query.offset || 0;
+	request(encodeURI(`http://musicapi.leanapp.cn/artist/album?id=${id}&limit=${limit}&offset=${offset}`), function (err, res, body) {
+        if (res && res.statusCode === 200){
+        	let result = JSON.parse(body);
+            result.success = true;
+            response.send(result);
+        } else {
+            response.send({success: false});
+        }
+    })
+})
+
 router.get('/download', function(req, response, next) {
 	var id = req.query.id;
     request.get('http://music.163.com/song/media/outer/url?id=' + id + '.mp3')

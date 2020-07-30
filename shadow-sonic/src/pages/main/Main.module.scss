@@ -12,6 +12,11 @@
 		.content{
 			display: flex;
 			justify-content: space-between;
+			align-items: center;
+			.title{
+				font-size: 32px;
+				font-weight: bold;
+			}
 		}
 	}
 	.container{

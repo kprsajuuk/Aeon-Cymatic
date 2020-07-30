@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Menu, Dropdown, Space, Slider, Popover, Switch, Button } from 'antd';
-import { CaretRightOutlined, PauseOutlined, SoundOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, PauseOutlined, NotificationOutlined } from '@ant-design/icons';
 import { GetDuration, DownloadBlob } from '@/utils'
 import style from './AudioControl.module.scss';
 
@@ -123,11 +123,11 @@ export default class AudioControl extends Component{
         return (
             <Space className={style.audioControl}>
                 <audio id="audioTag" src={audioSource} ></audio>
-                <div>
+                <div className={style.item}>
                     <Button shape="circle" onClick={this.onPlay} size='small' disabled={!audioSource}
                             icon={paused ? <CaretRightOutlined /> : <PauseOutlined />} />
                 </div>
-                <div>{GetDuration(current, 'seconds')}/{GetDuration(duration, 'seconds')}</div>
+                <div className={style.item}>{GetDuration(current, 'seconds')}/{GetDuration(duration, 'seconds')}</div>
                 <div className={style.progressBar}>
                     <div id='progressBar' className={style.current}>
                         <div id='currentProgressBar' className={style.progress} 
@@ -135,12 +135,12 @@ export default class AudioControl extends Component{
                         </div>
                     </div>
                 </div>
-                <div>
+                <div className={style.item}>
                     <Popover placement="bottom" content={Volume}>
-                        <SoundOutlined style={{cursor: 'pointer'}}/>
+                        <NotificationOutlined style={{cursor: 'pointer'}}/>
                     </Popover>
                 </div>
-                <div>
+                <div className={style.item}>
                     <Dropdown overlay={ActMenu} visible={actMenuVisible}
                             onVisibleChange={(v)=>this.setState({actMenuVisible: v})}>
                         <Button size='small'>更多</Button>

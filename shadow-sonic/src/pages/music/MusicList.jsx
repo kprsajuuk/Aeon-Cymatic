@@ -28,6 +28,10 @@ export default class MusicList extends Component{
         this.props.onAlbum(id);
     };
 
+    onArtistClick = (id) => {
+        this.props.onArtist(id);
+    };
+
     onPlay = (record) => {
         this.props.onPlay(record.id, record)
     };
@@ -47,7 +51,7 @@ export default class MusicList extends Component{
                 if (res.data.success){
                     this.setState({
                         musicList: res.data.result.songs,
-                        pagination: {...this.state.pagination, total: res.data.result.songCount},
+                        pagination: {...pagination, total: res.data.result.songCount},
                     })
                 } else {
                     notification.error({message: '网络错误 获取失败', duration: null})
@@ -58,13 +62,17 @@ export default class MusicList extends Component{
     render() {
         const loading = this.props.loading || this.state.loading;
         const columns = [
-            {title: '标题', dataIndex: 'name', key: 'name'},
+            {title: '歌曲名', dataIndex: 'name', key: 'name'},
             {title: '时长', dataIndex: 'duration', key: 'duration', width: 75, render: (text) => (<div>{GetDuration(text)}</div>)},
-            {title: '作者', dataIndex: 'artist', key: 'artist', render: (text, record) => (<div>{record.artists[0].name}</div>)},
+            {title: '作者', dataIndex: 'artist', key: 'artist', 
+                render: (text, record) => (
+                    <span className='link' onClick={()=>this.onArtistClick(record.artists[0].id)}>
+                        {record.artists[0].name}</span>
+                )},
             {title: '专辑', dataIndex: 'album', key: 'album', 
                 render: (text, record) => (
-                    <div className='link' onClick={()=>this.onAlbumClick(record.album.id)}>
-                        《{record.album.name}》</div>
+                    <span className='link' onClick={()=>this.onAlbumClick(record.album.id)}>
+                        《{record.album.name}》</span>
                 )},
             {title: '操作', dataIndex: 'id', key: 'action', width: 150,
                 render: (text, record) => (
@@ -92,7 +100,7 @@ export default class MusicList extends Component{
                            }, () => {this.fetchMusicList()})
                        }}
                        scroll={{y:window.innerHeight-268}}
-                       size='middle'
+                       size='small'
                        columns={columns} rowKey='id'/>
             </div>
         )

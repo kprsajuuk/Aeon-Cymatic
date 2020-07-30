@@ -11,6 +11,7 @@ export default class Main extends Component{
             <div className={style.main}>
             	<div className={style.topBar}>
                     <div className={style.content}>
+                        <div className={style.title}>AEON</div>
                     </div>
                 </div>
             	<div className={style.container}>
