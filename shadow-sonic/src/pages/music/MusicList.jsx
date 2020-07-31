@@ -34,12 +34,12 @@ class MusicList extends Component{
         this.props.onUpdate();
     };
 
-    onAlbumClick = (id) => {
-        this.props.onAlbum(id);
+    onAlbumClick = (record) => {
+        this.props.onAlbum(record);
     };
 
-    onArtistClick = (id) => {
-        this.props.onArtist(id);
+    onArtistClick = (record) => {
+        this.props.onArtist(record);
     };
 
     onPlay = (record) => {
@@ -47,21 +47,21 @@ class MusicList extends Component{
     };
 
     onDownload = (record) => {
-        this.props.onDownload(record.id, record.name)
+        this.props.onDownload(record.id, record)
     };
 
     fetchMusicList = () => {
         const { pagination, keyword, type } = this.state;
         let limit = pagination.pageSize;
-        let offset = (pagination.current - 1) * limit;
+        let page = pagination.current;
         this.setState({loading: true})
-        Axios.get('/search', {params: {sourceType: type, keyword: keyword, limit: limit, offset: offset}})
+        Axios.get('/search', {params: {source: type, keyword: keyword, limit: limit, page: page}})
             .then(res => { 
                 this.setState({loading: false});
                 if (res.data.success){
                     this.setState({
-                        musicList: res.data.result.songs,
-                        pagination: {...pagination, total: res.data.result.songCount},
+                        musicList: res.data.songs,
+                        pagination: {...pagination, total: res.data.total},
                     })
                 } else {
                     notification.error({message: '网络错误 获取失败', duration: null})
@@ -76,13 +76,13 @@ class MusicList extends Component{
             {title: '时长', dataIndex: 'duration', key: 'duration', width: 75, render: (text) => (<div>{GetDuration(text)}</div>)},
             {title: '歌手', dataIndex: 'artist', key: 'artist', 
                 render: (text, record) => (
-                    <span className='link' onClick={()=>this.onArtistClick(record.artists[0].id)}>
-                        {record.artists[0].name}</span>
+                    <span className='link' onClick={()=>this.onArtistClick(record)}>
+                        {record.artist}</span>
                 )},
             {title: '专辑', dataIndex: 'album', key: 'album', 
                 render: (text, record) => (
-                    <span className='link' onClick={()=>this.onAlbumClick(record.album.id)}>
-                        《{record.album.name}》</span>
+                    <span className='link' onClick={()=>this.onAlbumClick(record)}>
+                        《{record.album}》</span>
                 )},
             {title: '操作', dataIndex: 'id', key: 'action', width: 150,
                 render: (text, record) => (

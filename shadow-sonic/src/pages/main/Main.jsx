@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Input, Button, Select } from 'antd';
+import { Input, Select } from 'antd';
 import { connect } from 'react-redux';
 import { searchMusic } from "@/redux/action";
 import Axios from 'axios';
@@ -45,7 +45,6 @@ class Main extends Component{
                             </Select>
                             <Search onSearch={this.onSearch} value={this.state.keyword}
                                     onChange={(v)=>this.setState({keyword: v.target.value})}/>
-                            <Button onClick={this.onTest}>test</Button>
                         </div>
                     </div>
                 </div>

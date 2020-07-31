@@ -16,26 +16,49 @@ export default class Music extends Component{
         loading: false,
         audio: '',
         audioData: {},
-        albumId: '',
-        artistId: '',
+        album: {},
+        artist: {},
+        recentList: [],
     };
 
-    onAlbum = (id) => {
-        this.setState({tab: 'album', albumId: id});
+    componentDidMount(){
+        this.setState({
+            recentList: window.localStorage.getItem('recentList') || []
+        })
+    }
+
+    updateRecentList = (record) => {
+        const { recentList } = this.state;
+        recentList.push(record);
+        if (recentList.length > 50){
+            recentList.shift();
+        }
+        this.setState({recentList}, () => {
+            window.localStorage.setItem('recentList', recentList)
+        })
+    }
+
+    onAlbum = (album) => {
+        this.setState({tab: 'album', album: album});
     };
 
-    onArtist = (id) => {
-        this.setState({tab: 'artist', artistId: id})
+    onArtist = (artist) => {
+        this.setState({tab: 'artist', artist: artist})
+    }
+
+    onPlay = (id, record) => {
+        this.updateRecentList(record);
+        this.fetchPlay(id, record);
     }
 
     fetchPlay = (id, record) => {
         this.setState({loading: true, audioData: record});
         Axios.get('/download', {
-            params: {id: id},
+            params: {id: id, source: record.source},
             responseType: 'blob'
         }).then(res => {
             this.setState({loading: false});
-            if (res.data.size){
+            if (res.data.size > 17){
                 this.setState({audio: res})
             } else {
                 notification.error({message: '网络错误 获取失败', duration: null})
@@ -43,15 +66,15 @@ export default class Music extends Component{
         })
     };
 
-    fetchDownload = (id, name) => {
+    fetchDownload = (id, record) => {
         this.setState({loading: true});
         Axios.get('/download', {
-            params: {id: id},
+            params: {id: id, source: record.source},
             responseType: 'blob'
         }).then(res => {
             this.setState({loading: false});
-            if (res.data.size){
-                DownloadBlob(res, name+'.mp3');
+            if (res.data.size > 17){
+                DownloadBlob(res, record.name+'.mp3');
             } else {
                 notification.error({message: '网络错误 获取失败', duration: null})
             }
@@ -70,18 +93,19 @@ export default class Music extends Component{
                     <TabPane tab="歌曲" key="music" forceRender>
                         <MusicList loading={loading}
                                    onUpdate={()=>this.setState({tab: 'music'})}
-                                   onPlay={this.fetchPlay} onDownload={this.fetchDownload} 
+                                   onPlay={this.onPlay} onDownload={this.fetchDownload} 
                                    onAlbum={this.onAlbum} onArtist={this.onArtist}/>
                     </TabPane>
                     <TabPane tab="专辑" key="album" forceRender>
                         <AlbumList loading={loading}
-                                   albumId={this.state.albumId}
-                                   onPlay={this.fetchPlay}
+                                   album={this.state.album}
+                                   onPlay={this.onPlay}
                                    onDownload={this.fetchDownload} onArtist={this.onArtist}/>
                     </TabPane>
                     <TabPane tab="歌手" key="artist" forceRender>
-                        <ArtistList loading={loading} artistId={this.state.artistId}
-                                    onPlay={this.fetchPlay} onDownload={this.fetchDownload}
+                        <ArtistList loading={loading} 
+                                    artist={this.state.artist}
+                                    onPlay={this.onPlay} onDownload={this.fetchDownload}
                                     onAlbum={this.onAlbum}/>
                     </TabPane>
                     <TabPane tab="播放列表" key="play" forceRender>

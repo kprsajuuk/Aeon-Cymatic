@@ -16,7 +16,7 @@ export default class AlbumList extends Component{
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.albumId !== prevProps.albumId){
+        if (this.props.album.albumId !== prevProps.album.albumId){
             this.fetchAlbumDetail();
         }
     }
@@ -26,17 +26,16 @@ export default class AlbumList extends Component{
     };
 
     onDownload = (record) => {
-        console.log(record);
-        this.props.onDownload(record.id, record.name)
+        this.props.onDownload(record.id, record)
     };
 
-    onArtistClick = (id) => {
-        this.props.onArtist(id);
+    onArtistClick = (record) => {
+        this.props.onArtist(record);
     };
 
     fetchAlbumDetail = () => {
         this.setState({loading: true, albumInfo: {}});
-        Axios.get('/albumMusic', {params: {id: this.props.albumId}})
+        Axios.get('/albumMusic', {params: {id: this.props.album.albumId, source: this.props.album.source}})
             .then(res => {
                 this.setState({loading: false});
                 if (res.data.success){
@@ -55,10 +54,10 @@ export default class AlbumList extends Component{
         const { albumInfo } = this.state;
         const columns = [
             {title: '歌曲名', dataIndex: 'name', key: 'name'},
-            {title: '时长', dataIndex: 'dt', key: 'duration', width: 75, render: (text) => (<div>{GetDuration(text)}</div>)},
+            {title: '时长', dataIndex: 'duration', key: 'duration', width: 75, render: (text) => (<div>{GetDuration(text)}</div>)},
             {title: '歌手', dataIndex: 'artist', key: 'artist', 
                 render: (text, record) => (
-                    <span className='link' onClick={()=>this.onArtistClick(record.ar[0].id)}>{record.ar[0].name}</span>
+                    <span className='link' onClick={()=>this.onArtistClick(record)}>{record.artist}</span>
                 )},
             {title: '操作', dataIndex: 'id', key: 'action', width: 150,
                 render: (text, record) => (
@@ -71,8 +70,8 @@ export default class AlbumList extends Component{
 
         return (
             <div className={style.album}>
-                {this.props.albumId && <div className={style.info}>
-                    <LoadingImg minHeight={100} src={albumInfo.blurPicUrl}/>
+                {this.props.album.albumId && <div className={style.info}>
+                    <LoadingImg minHeight={100} src={albumInfo.img}/>
                     <div className={style.emphasize}>《{albumInfo.name}》</div>
                     <div>歌手: {albumInfo.artist ? albumInfo.artist.name : ''}</div>
                     <div>公司: {albumInfo.company}</div>

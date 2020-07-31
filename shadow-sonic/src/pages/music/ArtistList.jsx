@@ -19,7 +19,7 @@ export default class artistList extends Component{
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.artistId !== prevProps.artistId){
+        if (this.props.artist.artistId !== prevProps.artist.artistId){
             this.fetchArtistDetail();
             this.fetchArtistAlbum();
         }
@@ -30,21 +30,21 @@ export default class artistList extends Component{
     };
 
     onDownload = (record) => {
-        this.props.onDownload(record.id, record.name)
+        this.props.onDownload(record.id, record)
     };
 
-    onAlbum = (id) => {
-    	this.props.onAlbum(id);
+    onAlbumClick = (record) => {
+    	this.props.onAlbum(record);
     }
 
     fetchArtistDetail = () => {
         this.setState({loading: true, artistInfo: {}});
-        Axios.get('/artistMusic', {params: {id: this.props.artistId}})
+        Axios.get('/artistMusic', {params: {id: this.props.artist.artistId, source: this.props.artist.source}})
             .then(res => {
                 this.setState({loading: false});
                 if (res.data.success){
                    	this.setState({
-                   		hotList: res.data.hotSongs,
+                   		hotList: res.data.songs,
                    		artistInfo: res.data.artist,
                    	})
                 } else {
@@ -58,13 +58,13 @@ export default class artistList extends Component{
     	let limit = pagination.pageSize;
     	let offset = (pagination.current - 1) * limit;
         this.setState({loading: true});
-        Axios.get('/artistAlbum', {params: {id: this.props.artistId, limit: limit, offset: offset}})
+        Axios.get('/artistAlbum', {params: {id: this.props.artist.artistId, limit: limit, offset: offset, source: this.props.artist.source}})
             .then(res => {
                 this.setState({loading: false});
                 if (res.data.success){
                    	this.setState({
-                   		albumList: res.data.hotAlbums,
-                   		pagination: {...pagination, total: res.data.artist.albumSize}
+                   		albumList: res.data.albums,
+                   		pagination: {...pagination, total: res.data.albumSize}
                    	})
                 } else {
                     notification.error({message: '网络错误 获取歌手专辑失败', duration: null})
@@ -77,10 +77,10 @@ export default class artistList extends Component{
         const { artistInfo } = this.state;
         const musicColumns = [
             {title: '歌曲名', dataIndex: 'name', key: 'name'},
-            {title: '时长', dataIndex: 'dt', key: 'duration', width: 75, render: (text) => (<div>{GetDuration(text)}</div>)},
-            {title: '专辑', dataIndex: 'al', key: 'album', 
+            {title: '时长', dataIndex: 'duration', key: 'duration', width: 75, render: (text) => (<div>{GetDuration(text)}</div>)},
+            {title: '专辑', dataIndex: 'album', key: 'album', 
             	render: (text, record) => (
-            		<span className='link' onClick={()=>this.onAlbum(record.al.id)}>《{record.al.name}》</span>
+            		<span className='link' onClick={()=>this.onAlbumClick(record)}>《{record.album}》</span>
             	)},
             {title: '操作', dataIndex: 'id', key: 'action', width: 150,
                 render: (text, record) => (
@@ -92,9 +92,9 @@ export default class artistList extends Component{
         ];
 
         const albumColumns = [
-            {title: '专辑名', dataIndex: 'name', key: 'name', 
+            {title: '专辑名', dataIndex: 'album', key: 'album', 
             	render: (text, record) => (
-            		<span className='link' onClick={()=>this.onAlbum(record.id)}>《{text}》</span>
+            		<span className='link' onClick={()=>this.onAlbumClick(record)}>《{text}》</span>
             	)},
             {title: '发行日期', dataIndex: 'publishTime', key: 'publishTime', render: (text) => (moment(text).format('YYYY-MM-DD'))},
             {title: '公司', dataIndex: 'company', key: 'company'},
@@ -103,8 +103,8 @@ export default class artistList extends Component{
 
         return (
             <div className={style.album}>
-                {this.props.artistId && <div className={style.info}>
-                	<LoadingImg minHeight={100} src={artistInfo.picUrl}/>
+                {this.props.artist.artistId && <div className={style.info}>
+                	<LoadingImg minHeight={100} src={artistInfo.img}/>
                     <div className={style.emphasize}>{artistInfo.name}</div>
                 </div>}
                 <Tabs type="card" tabPosition='left' size='small'>
@@ -131,7 +131,7 @@ export default class artistList extends Component{
 		                       }}
 		                       size='small'
 		                       scroll={{y:window.innerHeight-268}}
-		                       columns={albumColumns} rowKey='id'/>
+		                       columns={albumColumns} rowKey='albumId'/>
 		         	</TabPane>
 		        </Tabs>
             </div>
