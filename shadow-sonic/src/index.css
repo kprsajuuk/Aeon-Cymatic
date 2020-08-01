@@ -38,6 +38,32 @@ div::-webkit-scrollbar-track, body::-webkit-scrollbar-track, ul::-webkit-scrollb
   color: #e5ce00;
 }
 
+.anticon.link{
+  color: #e5ce00;
+  font-size: 18px;
+}
+
 .link:hover{
   opacity: 0.65;
+}
+
+.link + .link{
+  margin-left: 12px;
+}
+
+.highlightRow{
+  animation: dark-grey 3s infinite;
+}
+
+@keyframes dark-grey {
+  0% {background: #141414}
+  50% {background: rgba(222, 202, 4, 0.11)
+  }
+  100% {background: #141414}
+}
+
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }

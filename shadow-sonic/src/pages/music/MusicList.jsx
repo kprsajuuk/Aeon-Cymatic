@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import { Button, Table, notification } from 'antd';
+import { Table, notification } from 'antd';
 import { connect } from 'react-redux';
 import Axios from 'axios';
 import Pagination from '@/settings/Pagination';
+import MusicAction from "@/lib/MusicAction";
 import { GetDuration } from "@/utils";
 import style from './Music.module.scss';
 
@@ -30,7 +31,7 @@ class MusicList extends Component{
             keyword: keyword,
             type: type,
             pagination: {...this.state.pagination, current: 1}
-        }, () => {this.fetchMusicList()})
+        }, () => {this.fetchMusicList()});
         this.props.onUpdate();
     };
 
@@ -46,6 +47,10 @@ class MusicList extends Component{
         this.props.onPlay(record.id, record)
     };
 
+    onAddList = (record) => {
+        this.props.onAddList(record);
+    };
+
     onDownload = (record) => {
         this.props.onDownload(record.id, record)
     };
@@ -54,7 +59,7 @@ class MusicList extends Component{
         const { pagination, keyword, type } = this.state;
         let limit = pagination.pageSize;
         let page = pagination.current;
-        this.setState({loading: true})
+        this.setState({loading: true});
         Axios.get('/search', {params: {source: type, keyword: keyword, limit: limit, page: page}})
             .then(res => { 
                 this.setState({loading: false});
@@ -85,11 +90,9 @@ class MusicList extends Component{
                         《{record.album}》</span>
                 )},
             {title: '操作', dataIndex: 'id', key: 'action', width: 150,
-                render: (text, record) => (
-                    <div>
-                        <Button type='link' onClick={()=>{this.onPlay(record)}}>播放</Button>
-                        <Button type='link' onClick={()=>this.onDownload(record)}>下载</Button>
-                    </div>
+                render: (text, record) => (<MusicAction onPlay={()=>{this.onPlay(record)}}
+                                                        onAddList={()=>{this.onAddList(record)}}
+                                                        onDownload={()=>this.onDownload(record)}/>
                 )},
         ];
         return (

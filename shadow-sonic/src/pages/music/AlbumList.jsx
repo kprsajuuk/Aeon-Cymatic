@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
-import { Button, Table, notification } from 'antd';
+import { Table, notification, Tooltip, Popover } from 'antd';
+import { PlusCircleOutlined, DashOutlined } from '@ant-design/icons';
 import Axios from 'axios';
 import moment from 'moment';
 import Pagination from '@/settings/Pagination';
 import LoadingImg from '@/lib/LoadingImg';
+import MusicAction from "@/lib/MusicAction";
 import { GetDuration } from "@/utils";
 import style from "./Music.module.scss";
 
@@ -23,6 +25,14 @@ export default class AlbumList extends Component{
 
     onPlay = (record) => {
         this.props.onPlay(record.id, record)
+    };
+
+    onAddList = (record) => {
+        this.props.onAddList(record);
+    };
+
+    onAddAlbum = () => {
+        this.props.onAddAlbum(this.state.musicList);
     };
 
     onDownload = (record) => {
@@ -60,11 +70,9 @@ export default class AlbumList extends Component{
                     <span className='link' onClick={()=>this.onArtistClick(record)}>{record.artist}</span>
                 )},
             {title: '操作', dataIndex: 'id', key: 'action', width: 150,
-                render: (text, record) => (
-                    <div>
-                        <Button type='link' onClick={()=>{this.onPlay(record)}}>播放</Button>
-                        <Button type='link' onClick={()=>this.onDownload(record)}>下载</Button>
-                    </div>
+                render: (text, record) => (<MusicAction onPlay={()=>{this.onPlay(record)}}
+                                                        onAddList={()=>{this.onAddList(record)}}
+                                                        onDownload={()=>this.onDownload(record)}/>
                 )},
         ];
 
@@ -73,9 +81,15 @@ export default class AlbumList extends Component{
                 {this.props.album.albumId && <div className={style.info}>
                     <LoadingImg minHeight={100} src={albumInfo.img}/>
                     <div className={style.emphasize}>《{albumInfo.name}》</div>
-                    <div>歌手: {albumInfo.artist ? albumInfo.artist.name : ''}</div>
+                    <div>歌手: {albumInfo.artist}</div>
                     <div>公司: {albumInfo.company}</div>
                     <div>发行时间: {moment(albumInfo.publishTime).format('YYYY-MM-DD')}</div>
+                    <Popover content={
+                        <Tooltip title='添加专辑中的歌曲到歌单'>
+                            <PlusCircleOutlined className='link' onClick={this.onAddAlbum}/>
+                        </Tooltip>}>
+                        <DashOutlined className='link'/>
+                    </Popover>
                 </div>}
                 <Table dataSource={this.state.musicList}
                        loading={loading}

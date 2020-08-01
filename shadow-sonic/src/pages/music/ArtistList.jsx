@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import { Button, Table, notification, Tabs } from 'antd';
+import { Table, notification, Tabs } from 'antd';
 import Axios from 'axios';
 import moment from 'moment';
 import Pagination from '@/settings/Pagination';
 import LoadingImg from '@/lib/LoadingImg';
+import MusicAction from "@/lib/MusicAction";
 import { GetDuration } from "@/utils";
 import style from "./Music.module.scss";
 
@@ -29,13 +30,17 @@ export default class artistList extends Component{
         this.props.onPlay(record.id, record)
     };
 
+    onAddList = (record) => {
+        this.props.onAddList(record);
+    };
+
     onDownload = (record) => {
         this.props.onDownload(record.id, record)
     };
 
     onAlbumClick = (record) => {
     	this.props.onAlbum(record);
-    }
+    };
 
     fetchArtistDetail = () => {
         this.setState({loading: true, artistInfo: {}});
@@ -56,9 +61,9 @@ export default class artistList extends Component{
     fetchArtistAlbum = () => {
     	const { pagination } = this.state;
     	let limit = pagination.pageSize;
-    	let offset = (pagination.current - 1) * limit;
+    	let page = pagination.current;
         this.setState({loading: true});
-        Axios.get('/artistAlbum', {params: {id: this.props.artist.artistId, limit: limit, offset: offset, source: this.props.artist.source}})
+        Axios.get('/artistAlbum', {params: {id: this.props.artist.artistId, limit: limit, page: page, source: this.props.artist.source}})
             .then(res => {
                 this.setState({loading: false});
                 if (res.data.success){
@@ -83,11 +88,9 @@ export default class artistList extends Component{
             		<span className='link' onClick={()=>this.onAlbumClick(record)}>《{record.album}》</span>
             	)},
             {title: '操作', dataIndex: 'id', key: 'action', width: 150,
-                render: (text, record) => (
-                    <div>
-                        <Button type='link' onClick={()=>{this.onPlay(record)}}>播放</Button>
-                        <Button type='link' onClick={()=>this.onDownload(record)}>下载</Button>
-                    </div>
+                render: (text, record) => (<MusicAction onPlay={()=>{this.onPlay(record)}}
+                                                        onAddList={()=>{this.onAddList(record)}}
+                                                        onDownload={()=>this.onDownload(record)}/>
                 )},
         ];
 

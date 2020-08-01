@@ -2,8 +2,8 @@ var fs = require('fs');
 var request = require("request");
 
 module.exports = function (app) {
-    app.get('/', function(req, response, next){
-        response.sendFile(__dirname + '/' + 'index.html')
+    app.get('/music', function(req, response, next){
+        response.sendFile(__dirname, '../index.html')
     });
 
     app.get('/downloadOrig', function(req, response, next){

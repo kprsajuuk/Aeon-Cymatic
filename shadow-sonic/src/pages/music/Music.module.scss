@@ -13,6 +13,17 @@
       min-width: 200px;
       flex-shrink: 0;
     }
+    .select{
+      width: 100px;
+    }
+    .item{
+      display: flex;
+      align-items: center;
+      margin-left: 12px;
+      .text{
+        margin-right: 6px;
+      }
+    }
   }
   .table{
     height: 100%;

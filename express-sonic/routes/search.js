@@ -14,7 +14,7 @@ function formatNetMusicList (list) {
 			album: item.album.name,albumId: item.album.id,
 			source: 'net',
 		})
-	})
+	});
 	return result;
 }
 

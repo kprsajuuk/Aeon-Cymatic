@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Spin, Empty } from 'antd';
 
-export default class artistList extends Component{
+export default class LoadingImg extends Component{
     state = {
         loading: true,
         imageErr: false,

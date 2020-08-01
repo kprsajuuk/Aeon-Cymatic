@@ -4,6 +4,7 @@ import AudioControl from "./AudioControl";
 import MusicList from "./MusicList";
 import AlbumList from "./AlbumList";
 import ArtistList from "./ArtistList";
+import PlayList from "./PlayList";
 import { notification, Tabs } from 'antd';
 import { DownloadBlob } from "@/utils";
 import style from './Music.module.scss';
@@ -14,29 +15,53 @@ export default class Music extends Component{
     state = {
         tab: 'music',
         loading: false,
-        audio: '',
+        audioSrc: '',
         audioData: {},
         album: {},
         artist: {},
         recentList: [],
+        customList: [],
+        currentPlayList: 'recentList',
+        playMod: 'soloSingle',
+        playingList: [],
     };
 
     componentDidMount(){
         this.setState({
-            recentList: window.localStorage.getItem('recentList') || []
+            recentList: JSON.parse(window.localStorage.getItem('recentList')) || [],
+            customList: JSON.parse(window.localStorage.getItem('customList')) || [],
         })
     }
 
-    updateRecentList = (record) => {
-        const { recentList } = this.state;
-        recentList.push(record);
-        if (recentList.length > 50){
-            recentList.shift();
-        }
-        this.setState({recentList}, () => {
-            window.localStorage.setItem('recentList', recentList)
-        })
-    }
+    updatePlayList = (listType, action, records) => {
+        let list = JSON.parse(window.localStorage.getItem(listType)) || [];
+        let result = {};
+        records.forEach(record => {
+            let index = -1;
+            list.forEach((item, i) => {
+                if (item.id === record.id){
+                    index = i;
+                }
+            });
+            switch (action) {
+                case 'remove':
+                    if (index >= 0){list.splice(index, 1)}
+                    break;
+                case 'add':
+                    if (index === -1){list.push(record)}
+                    break;
+                case 'toTop':
+                    if (index >= 0){list.splice(index, 1)}
+                    list.splice(0, 0, record);
+                    break;
+                default:
+                    break;
+            }
+        });
+        window.localStorage.setItem(listType, JSON.stringify(list));
+        result[listType] = list;
+        this.setState({...result})
+    };
 
     onAlbum = (album) => {
         this.setState({tab: 'album', album: album});
@@ -44,12 +69,49 @@ export default class Music extends Component{
 
     onArtist = (artist) => {
         this.setState({tab: 'artist', artist: artist})
-    }
+    };
 
-    onPlay = (id, record) => {
-        this.updateRecentList(record);
+    onPlay = (id, record, listType='recentList') => {
+        this.updatePlayList('recentList', 'toTop', [record]);
+        this.setState({currentPlayList: listType});
         this.fetchPlay(id, record);
-    }
+    };
+
+    onAddList = (record) => {
+        const { customList } = this.state;
+        let index = -1;
+        customList.forEach((item, i) => {
+            if (item.id === record.id){index = i}
+        });
+        if (index >= 0){
+            notification.warning({message: '歌曲已在歌单中', duration: 4})
+        } else {
+            this.updatePlayList('customList', 'add', [record]);
+            notification.success({message: '添加成功', duration: 4});
+        }
+    };
+
+    onAddAlbum = (records) => {
+        this.updatePlayList('customList', 'add', records);
+        notification.success({message: '添加成功', duration: 4})
+    };
+
+    onAudioEnd = (next=0) => {
+        if (this.state.playMod === 'list' || next !== 0){
+            let list = JSON.parse(window.localStorage.getItem(this.state.currentPlayList)) || [];
+            let index = -1;
+            list.forEach((item, i) => {
+                if (item.id === this.state.audioData.id){index = i}
+            });
+            if (index >= 0){
+                index += next >= 0 ? 1 : -1;
+                if (index >= list.length){index = 0}
+                if (index < 0){index = Math.max(list.length - 1, 0)}
+                let record = list[index];
+                if (record){this.fetchPlay(record.id, record)}
+            }
+        }
+    };
 
     fetchPlay = (id, record) => {
         this.setState({loading: true, audioData: record});
@@ -59,7 +121,7 @@ export default class Music extends Component{
         }).then(res => {
             this.setState({loading: false});
             if (res.data.size > 17){
-                this.setState({audio: res})
+                this.setState({audioSrc: res})
             } else {
                 notification.error({message: '网络错误 获取失败', duration: null})
             }
@@ -82,9 +144,10 @@ export default class Music extends Component{
     };
 
     render() {
-        const { loading } = this.state;
+        const { loading, playMod, recentList, customList, audioData, currentPlayList } = this.state;
         const TabExtra = (
-            <AudioControl src={this.state.audio} audioData={this.state.audioData}/>
+            <AudioControl src={this.state.audioSrc} audioData={audioData} playMod={playMod}
+                          onAudioEnd={this.onAudioEnd}/>
         );
         return (
             <div className={style.music}>
@@ -93,23 +156,29 @@ export default class Music extends Component{
                     <TabPane tab="歌曲" key="music" forceRender>
                         <MusicList loading={loading}
                                    onUpdate={()=>this.setState({tab: 'music'})}
-                                   onPlay={this.onPlay} onDownload={this.fetchDownload} 
+                                   onPlay={this.onPlay} onAddList={this.onAddList} onDownload={this.fetchDownload}
                                    onAlbum={this.onAlbum} onArtist={this.onArtist}/>
                     </TabPane>
                     <TabPane tab="专辑" key="album" forceRender>
                         <AlbumList loading={loading}
                                    album={this.state.album}
-                                   onPlay={this.onPlay}
-                                   onDownload={this.fetchDownload} onArtist={this.onArtist}/>
+                                   onPlay={this.onPlay} onAddList={this.onAddList} onDownload={this.fetchDownload}
+                                   onArtist={this.onArtist} onAddAlbum={this.onAddAlbum}/>
                     </TabPane>
                     <TabPane tab="歌手" key="artist" forceRender>
                         <ArtistList loading={loading} 
                                     artist={this.state.artist}
-                                    onPlay={this.onPlay} onDownload={this.fetchDownload}
+                                    onPlay={this.onPlay} onAddList={this.onAddList} onDownload={this.fetchDownload}
                                     onAlbum={this.onAlbum}/>
                     </TabPane>
                     <TabPane tab="播放列表" key="play" forceRender>
-                        播放列表
+                        <PlayList loading={loading}
+                                  recentList={recentList}
+                                  customList={customList}
+                                  currentType={currentPlayList} audioData={audioData}
+                                  onPlay={this.onPlay} onAddList={this.onAddList} onDownload={this.fetchDownload}
+                                  onArtist={this.onArtist} onUpdate={this.updatePlayList}
+                                  onModChange={(v)=>this.setState({playMod: v})}/>
                     </TabPane>
                 </Tabs>
             </div>
