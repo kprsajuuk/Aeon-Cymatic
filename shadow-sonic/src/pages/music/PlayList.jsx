@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { Table, Tabs, Switch } from 'antd';
-import { CloseOutlined, SyncOutlined } from '@ant-design/icons';
+import { CloseOutlined, SyncOutlined, CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons';
+import Pagination from '@/settings/Pagination';
 import MusicAction from "@/lib/MusicAction";
 import { GetDuration } from "@/utils";
 import style from './Music.module.scss';
@@ -12,6 +13,8 @@ export default class PlayList extends Component{
         loading: false,
         editMod: false,
         listType: 'customList',
+        customPagination: Pagination(),
+        recentPagination: Pagination(),
     };
 
     componentDidMount() {
@@ -45,15 +48,25 @@ export default class PlayList extends Component{
         this.props.onModChange(v);
     };
 
+    onPositionChange = (record, num) => {
+        const { listType } = this.state;
+        this.props.onUpdate(listType, 'move', record, num);
+    }
+
     render() {
         const { customList, recentList, currentType, audioData } = this.props;
         const { editMod, listType } = this.state;
         const loading = this.props.loading || this.state.loading;
         const columns = [
-            {title: '', dataIndex: 'name', key: 'remove', width: 30,
+            {title: '', dataIndex: 'name', key: 'remove', width: 64,
                 render: (text, record) => (
                     <div>
-                        {editMod ? <CloseOutlined className='link' onClick={()=>this.onRemove([record])}/> : ''}
+                        {editMod && 
+                            <div className={style.rowAct}>
+                                <ArrowAction onArrow={(num)=>this.onPositionChange([record], num)}/>
+                                <CloseOutlined className='link' onClick={()=>this.onRemove([record])}/>
+                            </div>
+                        }
                     </div>
                 )},
             {title: '', dataIndex: 'name', key: 'playing', width: 30,
@@ -79,7 +92,7 @@ export default class PlayList extends Component{
         ];
 
         return (
-            <div>
+            <div className={style.playList}>
                 <div className={style.header}>
                     <div className={style.item}>
                         <div className={style.text}>编辑</div>
@@ -98,6 +111,16 @@ export default class PlayList extends Component{
                                rowClassName={(record) => {
                                    return (listType === currentType && record.id === audioData.id) ? 'highlightRow' : ''
                                }}
+                               pagination={this.state.customPagination}
+                               onChange={(pagination) => {
+                                   this.setState({
+                                       customPagination: {
+                                           ...this.state.customPagination,
+                                           current: pagination.current,
+                                           pageSize: pagination.pageSize
+                                       }
+                                   })
+                               }}
                                scroll={{y:window.innerHeight-268}}
                                size='small'
                                columns={columns} rowKey='id'/>
@@ -108,11 +131,33 @@ export default class PlayList extends Component{
                                rowClassName={(record) => {
                                    return (listType === currentType && record.id === audioData.id) ? 'highlightRow' : ''
                                }}
+                               pagination={this.state.recentPagination}
+                               onChange={(pagination) => {
+                                   this.setState({
+                                       recentPagination: {
+                                           ...this.state.recentPagination,
+                                           current: pagination.current,
+                                           pageSize: pagination.pageSize
+                                       }
+                                   })
+                               }}
                                scroll={{y:window.innerHeight-268}}
                                size='small'
                                columns={columns} rowKey='id'/>
                     </TabPane>
                 </Tabs>
+            </div>
+        )
+    }
+}
+
+class ArrowAction extends Component{
+    state = {};
+    render(){
+        return (
+            <div>
+                <CaretUpOutlined onClick={()=>this.props.onArrow(-1)} className='link'/>
+                <CaretDownOutlined onClick={()=>this.props.onArrow(1)} className={[style.arrow, 'link'].join(' ')}/>
             </div>
         )
     }

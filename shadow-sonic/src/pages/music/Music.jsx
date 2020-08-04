@@ -33,7 +33,7 @@ export default class Music extends Component{
         })
     }
 
-    updatePlayList = (listType, action, records) => {
+    updatePlayList = (listType, action, records, num=0) => {
         let list = JSON.parse(window.localStorage.getItem(listType)) || [];
         let result = {};
         records.forEach(record => {
@@ -51,8 +51,16 @@ export default class Music extends Component{
                     if (index === -1){list.push(record)}
                     break;
                 case 'toTop':
-                    if (index >= 0){list.splice(index, 1)}
-                    list.splice(0, 0, record);
+                    if (index >= 0){
+                        list.splice(index, 1)
+                        list.splice(0, 0, record);
+                    }
+                    break;
+                case 'move':
+                    if (index >= 0){
+                        list.splice(index, 1)
+                        list.splice(index + num, 0, record);
+                    }
                     break;
                 default:
                     break;
@@ -114,7 +122,7 @@ export default class Music extends Component{
     };
 
     fetchPlay = (id, record) => {
-        this.setState({loading: true, audioData: record});
+        this.setState({loading: true, audioData: record, audioSrc: ''});
         Axios.get('/download', {
             params: {id: id, source: record.source},
             responseType: 'blob'

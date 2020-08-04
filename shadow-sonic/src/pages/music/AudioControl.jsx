@@ -44,9 +44,9 @@ export default class AudioControl extends Component{
             this.audio.removeEventListener('timeupdate', this.onTimeUpdate);
             this.audio.addEventListener('timeupdate', this.onTimeUpdate);
             this.progressBar.onmousedown = this.onDrageProgress;
-            this.audio.addEventListener('ended', ()=>this.onAudioEnd(0));
+            this.audio.removeEventListener('ended', this.onEndEvent);
+            this.audio.addEventListener('ended', this.onEndEvent);
         })
-        
     };
 
     onTimeUpdate = () => {
@@ -86,7 +86,12 @@ export default class AudioControl extends Component{
         }
     };
 
+    onEndEvent = () => {
+        this.onAudioEnd(0);
+    }
+
     onAudioEnd = (next = 0) => {
+        console.log('end');
         this.audio.currentTime = 0;
         if (this.state.loop){
             this.audio.play();

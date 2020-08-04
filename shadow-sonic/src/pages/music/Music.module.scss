@@ -49,3 +49,13 @@
     }
   }
 }
+
+.playList{
+  .rowAct{
+    display: flex;
+    align-items: center;
+    .arrow{
+      margin-left: 0;
+    }
+  }
+}
