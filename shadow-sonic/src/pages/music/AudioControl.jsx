@@ -91,7 +91,6 @@ export default class AudioControl extends Component{
     }
 
     onAudioEnd = (next = 0) => {
-        console.log('end');
         this.audio.currentTime = 0;
         if (this.state.loop){
             this.audio.play();

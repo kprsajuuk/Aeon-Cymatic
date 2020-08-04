@@ -53,8 +53,8 @@ export default class Music extends Component{
                 case 'toTop':
                     if (index >= 0){
                         list.splice(index, 1)
-                        list.splice(0, 0, record);
                     }
+                    list.splice(0, 0, record);
                     break;
                 case 'move':
                     if (index >= 0){
