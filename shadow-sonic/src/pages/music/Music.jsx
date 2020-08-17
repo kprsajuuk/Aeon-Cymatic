@@ -144,7 +144,7 @@ export default class Music extends Component{
         }).then(res => {
             this.setState({loading: false});
             if (res.data.size > 17){
-                let suffix = navigator.platform.toLowerCase().indexOf('mac') >= 0 ? '.m4a' : '.mp3';
+                let suffix = record.source === 'qq' ? '.m4a' : '.mp3';
                 DownloadBlob(res, record.name+suffix);
             } else {
                 notification.error({message: '网络错误 获取失败', duration: null})

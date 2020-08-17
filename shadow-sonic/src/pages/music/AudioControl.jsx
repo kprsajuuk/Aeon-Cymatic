@@ -102,7 +102,7 @@ export default class AudioControl extends Component{
     };
 
     onDownload = () => {
-        let suffix = navigator.platform.toLowerCase().indexOf('mac') >= 0 ? '.m4a' : '.mp3';
+        let suffix = this.props.audioData.source === 'qq' ? '.m4a' : '.mp3';
         DownloadBlob(this.props.src, this.props.audioData.name + suffix);
     };
 
