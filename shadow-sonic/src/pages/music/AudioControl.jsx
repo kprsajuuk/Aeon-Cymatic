@@ -29,6 +29,25 @@ export default class AudioControl extends Component{
 
     initAudio = () => {
         let blob = new Blob([this.props.src.data]);
+        let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let AudioBufferSourceNode = audioCtx.createBufferSource();
+        let AnalyserNode = audioCtx.createAnalyser();
+        let reader = new FileReader();
+        reader.readAsArrayBuffer(blob);
+        reader.onload = (e) => {
+            audioCtx.decodeAudioData(e.target.result, (buffer)=>{
+                AudioBufferSourceNode.buffer = buffer;
+                AudioBufferSourceNode.loop = true;
+                AudioBufferSourceNode.connect(audioCtx.destination)
+                AudioBufferSourceNode.connect(AnalyserNode);
+                //AudioBufferSourceNode.start(0);
+            })
+        }
+
+        let arr = new Uint8Array(AnalyserNode.frequencyBinCount);
+        
+        return;
+        
         let source = URL.createObjectURL(blob);
         this.setState({audioSource: source}, () => {
             let interval = setInterval(()=>{
@@ -169,6 +188,9 @@ export default class AudioControl extends Component{
                         </div>
                     </Space>
                 </Popover>
+                <div className={style.canvasContainer}>
+                    <div>yes, dats right</div>
+                </div>
             </div>
         )
     }

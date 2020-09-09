@@ -33,7 +33,7 @@ export default class Music extends Component{
         })
     }
 
-    updatePlayList = (listType, action, records, num=0) => {
+    updatePlayList = (listType, action, records, num=0, maxLength=-1) => {
         let list = JSON.parse(window.localStorage.getItem(listType)) || [];
         let result = {};
         records.forEach(record => {
@@ -66,6 +66,11 @@ export default class Music extends Component{
                     break;
             }
         });
+        if (maxLength >= 0 && list.length > 0){
+            while(list.length > maxLength){
+                list.pop();
+            }
+        }
         window.localStorage.setItem(listType, JSON.stringify(list));
         result[listType] = list;
         this.setState({...result})
@@ -80,7 +85,7 @@ export default class Music extends Component{
     };
 
     onPlay = (id, record, listType='recentList') => {
-        this.updatePlayList('recentList', 'toTop', [record]);
+        this.updatePlayList('recentList', 'toTop', [record], 50);
         this.setState({currentPlayList: listType});
         this.fetchPlay(id, record);
     };
