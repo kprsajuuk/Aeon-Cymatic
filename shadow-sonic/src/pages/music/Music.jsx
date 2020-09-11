@@ -85,7 +85,7 @@ export default class Music extends Component{
     };
 
     onPlay = (id, record, listType='recentList') => {
-        this.updatePlayList('recentList', 'toTop', [record], 50);
+        this.updatePlayList('recentList', 'toTop', [record], 0, 50);
         this.setState({currentPlayList: listType});
         this.fetchPlay(id, record);
     };
