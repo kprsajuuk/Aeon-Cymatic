@@ -106,44 +106,48 @@ export default class PlayList extends Component{
                 <Tabs type="card" tabPosition='left' size='small' activeKey={this.state.listType}
                       onChange={(v)=>this.setState({listType: v})}>
                     <TabPane tab="歌单" key="customList">
-                        <Table dataSource={customList}
-                               loading={loading}
-                               rowClassName={(record) => {
-                                   return (listType === currentType && record.id === audioData.id) ? 'highlightRow' : ''
-                               }}
-                               pagination={this.state.customPagination}
-                               onChange={(pagination) => {
-                                   this.setState({
-                                       customPagination: {
-                                           ...this.state.customPagination,
-                                           current: pagination.current,
-                                           pageSize: pagination.pageSize
-                                       }
-                                   })
-                               }}
-                               scroll={{y:window.innerHeight-268}}
-                               size='small'
-                               columns={columns} rowKey='id'/>
+                        <div className={style.table}>
+                            <Table dataSource={customList}
+                                   loading={loading}
+                                   rowClassName={(record) => {
+                                       return (listType === currentType && record.id === audioData.id) ? 'highlightRow' : ''
+                                   }}
+                                   pagination={this.state.customPagination}
+                                   onChange={(pagination) => {
+                                       this.setState({
+                                           customPagination: {
+                                               ...this.state.customPagination,
+                                               current: pagination.current,
+                                               pageSize: pagination.pageSize
+                                           }
+                                       })
+                                   }}
+                                   scroll={{y:window.innerHeight-268}}
+                                   size='small'
+                                   columns={columns} rowKey='id'/>
+                        </div>
                     </TabPane>
                     <TabPane tab="最近播放" key="recentList">
-                        <Table dataSource={recentList}
-                               loading={loading}
-                               rowClassName={(record) => {
-                                   return (listType === currentType && record.id === audioData.id) ? 'highlightRow' : ''
-                               }}
-                               pagination={this.state.recentPagination}
-                               onChange={(pagination) => {
-                                   this.setState({
-                                       recentPagination: {
-                                           ...this.state.recentPagination,
-                                           current: pagination.current,
-                                           pageSize: pagination.pageSize
-                                       }
-                                   })
-                               }}
-                               scroll={{y:window.innerHeight-268}}
-                               size='small'
-                               columns={columns} rowKey='id'/>
+                        <div className={style.table}>
+                            <Table dataSource={recentList}
+                                   loading={loading}
+                                   rowClassName={(record) => {
+                                       return (listType === currentType && record.id === audioData.id) ? 'highlightRow' : ''
+                                   }}
+                                   pagination={this.state.recentPagination}
+                                   onChange={(pagination) => {
+                                       this.setState({
+                                           recentPagination: {
+                                               ...this.state.recentPagination,
+                                               current: pagination.current,
+                                               pageSize: pagination.pageSize
+                                           }
+                                       })
+                                   }}
+                                   scroll={{y:window.innerHeight-268}}
+                                   size='small'
+                                   columns={columns} rowKey='id'/>
+                        </div>
                     </TabPane>
                 </Tabs>
             </div>

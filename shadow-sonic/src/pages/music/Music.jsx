@@ -165,7 +165,7 @@ export default class Music extends Component{
         );
         return (
             <div className={style.music}>
-                <Tabs activeKey={this.state.tab} tabBarExtraContent={TabExtra} 
+                <Tabs activeKey={this.state.tab} tabBarExtraContent={TabExtra}
                         onChange={(v)=>this.setState({tab: v})}>
                     <TabPane tab="歌曲" key="music" forceRender>
                         <MusicList loading={loading}

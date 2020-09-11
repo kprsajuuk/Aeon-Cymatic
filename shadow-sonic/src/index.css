@@ -67,3 +67,7 @@ div::-webkit-scrollbar-track, body::-webkit-scrollbar-track, ul::-webkit-scrollb
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+.ant-tabs-nav-wrap{
+  z-index: 1;
+}

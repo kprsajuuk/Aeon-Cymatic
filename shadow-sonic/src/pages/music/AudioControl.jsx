@@ -12,6 +12,7 @@ export default class AudioControl extends Component{
         paused: true,
         volume: 100,
         loop: false,
+        visual: false,
         actMenuVisible: false,
         extendVisible: false,
     };
@@ -19,6 +20,14 @@ export default class AudioControl extends Component{
     componentDidMount(){
         this.audio = document.getElementById('audioTag');
         this.progressBar = document.getElementById('progressBar');
+        this.animationEnded = true;
+
+        this.canvas = document.getElementById('audioCanvas');
+        let container = document.getElementById('canvasContainer');
+        this.canvas.width = container.clientWidth;
+        this.canvas.height = container.clientHeight;
+        this.ctx = this.canvas.getContext('2d');
+        this.ctx.fillStyle = 'rgba(229, 206, 0, 0.3)';
     }
 
     componentDidUpdate(prevProps, prevState, snapshot){
@@ -29,43 +38,71 @@ export default class AudioControl extends Component{
 
     initAudio = () => {
         let blob = new Blob([this.props.src.data]);
-        let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        let AudioBufferSourceNode = audioCtx.createBufferSource();
-        let AnalyserNode = audioCtx.createAnalyser();
-        let reader = new FileReader();
-        reader.readAsArrayBuffer(blob);
-        reader.onload = (e) => {
-            audioCtx.decodeAudioData(e.target.result, (buffer)=>{
-                AudioBufferSourceNode.buffer = buffer;
-                AudioBufferSourceNode.loop = true;
-                AudioBufferSourceNode.connect(audioCtx.destination)
-                AudioBufferSourceNode.connect(AnalyserNode);
-                //AudioBufferSourceNode.start(0);
-            })
+        if (!this.audioCtx){
+            this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            this.audioSource = this.audioCtx.createMediaElementSource(document.querySelector('audio'));
+            this.analyser = this.audioCtx.createAnalyser();
+            this.analyser.fftSize = 256;
+            this.audioSource.connect(this.analyser);
+            this.analyser.connect(this.audioCtx.destination);
         }
-
-        let arr = new Uint8Array(AnalyserNode.frequencyBinCount);
-        
-        return;
-        
         let source = URL.createObjectURL(blob);
         this.setState({audioSource: source}, () => {
             let interval = setInterval(()=>{
                 if (!isNaN(this.audio.duration)){
                     clearInterval(interval);
-                    this.audio.play();
+                    this.playMusic();
                     this.setState({
                         duration: Math.floor(this.audio.duration),
-                        paused: false
                     })
                 }
             }, 100);
             this.audio.removeEventListener('timeupdate', this.onTimeUpdate);
             this.audio.addEventListener('timeupdate', this.onTimeUpdate);
-            this.progressBar.onmousedown = this.onDrageProgress;
+            this.progressBar.onmousedown = this.onDragProgress;
             this.audio.removeEventListener('ended', this.onEndEvent);
             this.audio.addEventListener('ended', this.onEndEvent);
         })
+    };
+
+    drawVisualEffect = () => {
+        let array = new Uint8Array(this.analyser.frequencyBinCount);
+        this.analyser.getByteFrequencyData(array);
+        let c_width = this.canvas.width;
+        let c_height = this.canvas.height;
+
+        this.ctx.clearRect(0, 0, c_width, c_height);
+        if (this.state.visual){
+            let rec_width = c_width / 2 / array.length;
+            for (let i=0; i<array.length; i++){
+                let rec_height = (array[i]/256 * c_height) * 0.3;
+                this.ctx.fillRect(rec_width * i, c_height - rec_height, rec_width * 0.7, rec_height)
+                this.ctx.fillRect(c_width - rec_width * i, c_height - rec_height, rec_width * 0.7, rec_height)
+            }
+            if (!this.animationEnd){
+                window.requestAnimationFrame(this.drawVisualEffect);
+            } else {
+                this.animationEnded = true;
+                this.ctx.clearRect(0, 0, c_width, c_height);
+            }
+        }
+    };
+
+    playMusic = () => {
+        clearTimeout(this.animationEndTimer);
+        this.animationEnd = false;
+        this.audio.play();
+        this.setState({paused: false});
+        if (this.animationEnded){
+            this.animationEnded = false;
+            window.requestAnimationFrame(this.drawVisualEffect);
+        }
+    };
+
+    pauseMusic = () => {
+        this.audio.pause();
+        this.animationEndTimer = setTimeout(()=>this.animationEnd = true, 2000);
+        this.setState({paused: true})
     };
 
     onTimeUpdate = () => {
@@ -78,11 +115,10 @@ export default class AudioControl extends Component{
 
     onPlay = () => {
         if (this.audio.paused){
-            this.audio.play();
+            this.playMusic();
         } else {
-            this.audio.pause();
+            this.pauseMusic();
         }
-        this.setState({paused: this.audio.paused});
     };
 
     onVolumeChange = (v) => {
@@ -91,7 +127,7 @@ export default class AudioControl extends Component{
         })
     };
 
-    onDrageProgress = (event) => {
+    onDragProgress = (event) => {
         event.preventDefault();
         let totalWidth = document.getElementById('progressBar').offsetWidth;
 
@@ -106,15 +142,16 @@ export default class AudioControl extends Component{
     };
 
     onEndEvent = () => {
+        this.audio.pause();
         this.onAudioEnd(0);
-    }
+    };
 
     onAudioEnd = (next = 0) => {
         this.audio.currentTime = 0;
         if (this.state.loop){
-            this.audio.play();
+            this.playMusic();
         } else {
-            this.audio.pause();
+            this.pauseMusic();
             this.setState({paused: true});
             this.props.onAudioEnd(next);
         }
@@ -123,6 +160,14 @@ export default class AudioControl extends Component{
     onDownload = () => {
         let suffix = this.props.audioData.source === 'qq' ? '.m4a' : '.mp3';
         DownloadBlob(this.props.src, this.props.audioData.name + suffix);
+    };
+
+    onVisualChange = (v) => {
+        this.setState({visual: v}, () => {
+            if (v && !this.state.paused){
+                window.requestAnimationFrame(this.drawVisualEffect);
+            }
+        })
     };
 
     render() {
@@ -139,14 +184,20 @@ export default class AudioControl extends Component{
             </div>
         );
         const ActMenu = (
-            <Menu onClick={(e)=>{if (e.key !== 'loopBtn'){this.setState({actMenuVisible: false})}}}>
+            <Menu onClick={(e)=>{if (e.key === 'downloadBtn'){this.setState({actMenuVisible: false})}}}>
                 <Menu.Item key='downloadBtn' disabled={!audioSource} onClick={this.onDownload}>
                     下载
                 </Menu.Item>
                 <Menu.Item key='loopBtn'>
                     <Space>
                         循环<Switch checkedChildren="开" unCheckedChildren="关"
-                                    onChange={(v)=>this.setState({loop: v})}/>
+                                  onChange={(v)=>this.setState({loop: v})}/>
+                    </Space>
+                </Menu.Item>
+                <Menu.Item key='visualBtn'>
+                    <Space>
+                        效果<Switch checkedChildren="开" unCheckedChildren="关"
+                                  onChange={this.onVisualChange}/>
                     </Space>
                 </Menu.Item>
             </Menu>
@@ -189,7 +240,9 @@ export default class AudioControl extends Component{
                     </Space>
                 </Popover>
                 <div className={style.canvasContainer}>
-                    <div>yes, dats right</div>
+                    <div id='canvasContainer' style={{height: '100%', width: '100%'}}>
+                        <canvas id='audioCanvas'/>
+                    </div>
                 </div>
             </div>
         )

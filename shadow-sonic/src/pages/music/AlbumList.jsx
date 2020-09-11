@@ -91,21 +91,23 @@ export default class AlbumList extends Component{
                         <DashOutlined className='link'/>
                     </Popover>
                 </div>}
-                <Table dataSource={this.state.musicList}
-                       loading={loading}
-                       pagination={this.state.pagination}
-                       onChange={(pagination) => {
-                           this.setState({
-                               pagination: {
-                                   ...this.state.pagination,
-                                   current: pagination.current,
-                                   pageSize: pagination.pageSize
-                               }
-                           })
-                       }}
-                       scroll={{y:window.innerHeight-268}}
-                       size='small'
-                       columns={columns} rowKey='id'/>
+                <div className={style.table}>
+                    <Table dataSource={this.state.musicList}
+                           loading={loading}
+                           pagination={this.state.pagination}
+                           onChange={(pagination) => {
+                               this.setState({
+                                   pagination: {
+                                       ...this.state.pagination,
+                                       current: pagination.current,
+                                       pageSize: pagination.pageSize
+                                   }
+                               })
+                           }}
+                           scroll={{y:window.innerHeight-268}}
+                           size='small'
+                           columns={columns} rowKey='id'/>
+                </div>
             </div>
         )
     }
