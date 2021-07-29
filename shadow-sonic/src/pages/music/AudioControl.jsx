@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Menu, Dropdown, Space, Popover, Slider, Switch, Button } from 'antd';
 import { CaretRightOutlined, PauseOutlined, NotificationOutlined, StepBackwardOutlined, StepForwardOutlined } from '@ant-design/icons';
 import { GetDuration, DownloadBlob } from '@/utils';
-import BeatDetector from 'beatdetector';
 import style from './AudioControl.module.scss';
 
 export default class AudioControl extends Component{
@@ -19,7 +18,6 @@ export default class AudioControl extends Component{
     };
 
     componentDidMount(){
-        this.audio = document.getElementById('audioTag');
         this.progressBar = document.getElementById('progressBar');
         this.animationEnded = true;
 
@@ -90,32 +88,14 @@ export default class AudioControl extends Component{
     };
 
     playMusic = () => {
-        window.AudioContext = window.AudioContext || window.webkitAudioContext;
-        window.OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext
         clearTimeout(this.animationEndTimer);
         this.animationEnd = false;
-        new BeatDetector(this.audio, this.analysisFin, this.onBeat, this.onBigBeat);        
-        
+        this.audio.play();        
         this.setState({paused: false});
         if (this.animationEnded){
             this.animationEnded = false;
             window.requestAnimationFrame(this.drawVisualEffect);
         }
-        
-
-    };
-
-    analysisFin = () => {
-        console.log('play');
-        this.audio.play();
-    };
-
-    onBeat = () => {
-        console.log("Emit Beat");
-    };
-     
-    onBigBeat = () => {
-        console.log("Wow!! Emit BigBeat");
     };
 
     pauseMusic = () => {
