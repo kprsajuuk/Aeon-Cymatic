@@ -18,6 +18,7 @@ export default class AudioControl extends Component{
     };
 
     componentDidMount(){
+        this.audio = document.getElementById('audioTag');
         this.progressBar = document.getElementById('progressBar');
         this.animationEnded = true;
 
