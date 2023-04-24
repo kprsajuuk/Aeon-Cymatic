@@ -1,8 +1,8 @@
 var axios = require('axios');
 
 const requestUrl = {
-	'net': 'http://musicapi.leanapp.cn/search',
-	'qq': 'http://c.y.qq.com/soso/fcgi-bin/client_search_cp',
+	'net': 'https://interface.music.163.com/eapi/cloudsearch/pc',
+	'qq': 'https://s.music.qq.com/fcgi-bin/music_search_new_platform',
 }
 
 function formatNetMusicList (list) {
@@ -22,9 +22,9 @@ function formatQqMusicList (list) {
 	let result = [];
 	list.forEach(item => {
 		result.push({
-			id: item.songmid, name: item.songname, duration: item.interval + '000',
+			id: item.mid, name: item.name, duration: item.interval + '000',
 			artist: item.singer[0].name, artistId: item.singer[0].mid,
-			album: item.albumname, albumId: item.albummid,
+			album: item.album?.name, albumId: item.album?.mid,
 			source: 'qq',
 		})
 	})
@@ -34,31 +34,49 @@ function formatQqMusicList (list) {
 module.exports = function (app) {
 	app.get('/search', function(req, response, next){
 		var source = req.query.source || 'net';
-		var keyword = req.query.keyword;
-	    var limit = req.query.limit || 10;
-	    var page = req.query.page || 1;
+		var searchKey = req.query.keyword;
+	    var pageSize = req.query.limit || 10;
+	    var pageNum = req.query.page || 1;
 	    let params = {};
 	    if (source === 'net'){
-	    	params = {keywords: keyword,limit: limit,offset: (page - 1) * limit}
+
 	    } else if (source === 'qq'){
 	    	params = {w: keyword, n: limit, p: page, format: 'json'}
 	    }
-		axios.get(requestUrl[source], {
-			params: params
-		}).then(res => {
+		axios(qqRequest.axiosConfig(searchKey, pageSize, pageNum)).then(res => {
 			if (res && res.status === 200){
-				let result = {success: true}
-				if (source === 'net'){
-					result.total = res.data.result.songCount;
-					result.songs = formatNetMusicList(res.data.result.songs);
-				} else if (source === 'qq'){
-					result.total = res.data.data.song.totalnum;
-					result.songs = formatQqMusicList(res.data.data.song.list)
-				}
-				response.send(result);
+				let list = res.data?.req_1?.data?.body?.song?.list || []
+				list = formatQqMusicList(list);
+				response.send({success: true, data: {songs: list, total: list.length}});
 			} else {
 				response.send({success: false});
 			}
-		}).catch(err=>{console.log(err); response.send({success: false})});
+		})
+		
 	});
 };
+
+class qqRequest {
+	static axiosConfig = (searchKey, pageSize, pageNum) => {
+		let data = {
+			req_1: {
+				method: "DoSearchForQQMusicDesktop",
+				module: "music.search.SearchCgiService",
+				param: {
+					num_per_page: pageSize,
+					page_num: pageNum,
+					query: searchKey,
+					search_type: 0
+				}
+			}
+		}
+		return {
+			url: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+			method: 'POST',
+			data: data,
+			headers: {
+				Referer: 'https://y.qq.com'
+			},
+		}
+	}
+}
