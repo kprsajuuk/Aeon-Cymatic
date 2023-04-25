@@ -37,22 +37,20 @@ module.exports = function (app) {
 		var searchKey = req.query.keyword;
 	    var pageSize = req.query.limit || 10;
 	    var pageNum = req.query.page || 1;
-	    let params = {};
-	    if (source === 'net'){
+
+		if (source === 'net'){
 
 	    } else if (source === 'qq'){
-	    	params = {w: keyword, n: limit, p: page, format: 'json'}
+	    	axios(qqRequest.axiosConfig(searchKey, pageSize, pageNum)).then(res => {
+				if (res && res.status === 200){
+					let list = res.data?.req_1?.data?.body?.song?.list || []
+					list = formatQqMusicList(list);
+					response.send({success: true, songs: list, total: list.length});
+				} else {
+					response.send({success: false});
+				}
+			})
 	    }
-		axios(qqRequest.axiosConfig(searchKey, pageSize, pageNum)).then(res => {
-			if (res && res.status === 200){
-				let list = res.data?.req_1?.data?.body?.song?.list || []
-				list = formatQqMusicList(list);
-				response.send({success: true, data: {songs: list, total: list.length}});
-			} else {
-				response.send({success: false});
-			}
-		})
-		
 	});
 };
 
