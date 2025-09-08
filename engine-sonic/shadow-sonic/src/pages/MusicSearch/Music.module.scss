@@ -1,0 +1,62 @@
+.music{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  .header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+    .input{
+      width: 200px;
+      min-width: 200px;
+      flex-shrink: 0;
+    }
+    .select{
+      width: 100px;
+    }
+    .item{
+      display: flex;
+      align-items: center;
+      margin-left: 12px;
+      .text{
+        margin-right: 6px;
+      }
+    }
+  }
+  .table{
+    height: 100%;
+    opacity: .9;
+  }
+}
+
+.album{
+  display: flex;
+  .info{
+    flex-shrink: 0;
+    width: 200px;
+    padding-right: 12px;
+    .emphasize{
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .item{
+      width: 100%;
+    }
+    .music{
+      width: 100%;
+      min-height: 100px;
+    }
+  }
+}
+
+.playList{
+  .rowAct{
+    display: flex;
+    align-items: center;
+    .arrow{
+      margin-left: 0;
+    }
+  }
+}

@@ -1,0 +1,68 @@
+.audioControl{
+	display: flex;
+	align-items: center;
+	font-size: 18px;
+	padding-right: 6px;
+	.interface{
+		z-index: 1;
+		border-radius: 6px;
+		cursor: default;
+		.progressBar{
+			height: 26px;
+			background: #3e3e3e;
+			width: 200px;
+			padding: 7px;
+			border-radius: 8px;
+			.current{
+				height: 100%;
+				background: #1e1e1e;
+				width: 100%;
+				border-radius: 4px;
+				overflow: hidden;
+				cursor: pointer;
+				.progress{
+					height: 100%;
+					width: 0%;
+					background: #e5ce00;
+				}
+			}
+		}
+		.item {
+			display: flex;
+			align-items: center;
+		}
+	}
+}
+
+.extend{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 300px;
+	.info{
+		max-width: 100%;
+	}
+	.action{
+		display: flex;
+		align-items: center;
+		flex-shrink: 0;
+	}
+}
+
+.volumePop{
+	height: 120px;
+	.slider{
+		height: 100%;
+	}
+}
+
+.canvasContainer{
+	z-index: 0;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	padding-top: 60px;
+	opacity: .9;
+}
