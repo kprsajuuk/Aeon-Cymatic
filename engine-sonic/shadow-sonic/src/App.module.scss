@@ -1,0 +1,30 @@
+.origin{
+	height: 100vh;
+	width: 100vw;
+	min-width: 1000px;
+	overflow: hidden;
+	background: #1e1f26;
+	color: #fff;
+	.main {
+		height: 100%;
+		width: 100%;
+		position: relative;
+		overflow: hidden;
+		min-height: 1px;
+		padding-top: 60px; //99px;
+		.header {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 60px;//99px;
+			border-bottom: 1px solid #faad14;
+			overflow: hidden;
+		}
+		.content {
+			height: 100%;
+			overflow: auto;
+			padding: 16px;
+		}
+	}
+}

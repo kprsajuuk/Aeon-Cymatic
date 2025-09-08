@@ -1,0 +1,73 @@
+body {
+    background-color: #f6f6f6;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial,
+      sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 14px;
+    height: 100vh;
+    overflow-y: auto;
+    margin: 0;
+}
+a {
+    text-decoration: none;
+    color: #4984cf;
+}
+p {
+    margin: 0;
+    padding: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	  margin-bottom: 0;
+}
+h2 {
+    font-size: 18px;
+    color: #fff;
+}
+div::-webkit-scrollbar,
+body::-webkit-scrollbar,
+ul::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+div::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
+ul::-webkit-scrollbar-thumb {
+    background: rgba(153, 153, 153, 0.6);
+    border-radius: 20px;
+    right: -100px;
+}
+div::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track,
+ul::-webkit-scrollbar-track {
+    background: #ddd;
+    border-radius: 20px;
+}
+
+/*-------------------*/
+.main {
+    background: #fff;
+    padding: 12px 20px;
+    border-radius: 2px;
+    min-height: 100%;
+}
+.actBtn:hover {
+    cursor: pointer;
+}
+
+.ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.graybox {
+    background: #fafafa; 
+    padding: 12px; 
+    border: 1px solid #ddd;
+}

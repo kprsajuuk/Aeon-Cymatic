@@ -1,0 +1,134 @@
+.loginContainer{
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    background-color: #333;
+}
+
+.loginWrap {
+    background: no-repeat center;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    min-height: 99.9vh;
+    position: relative;
+    .content {
+        max-height: 740px;
+        //max-width: 1300px;
+        min-height: 500px;
+        //min-width: 950px;
+        width: 30vw;
+        height: 34vw;
+        display: flex;
+        overflow: hidden;
+        position: relative;
+        border-radius: 8px;
+        .graph {
+            background: center center no-repeat;
+            background-color: #666;
+            min-height: 4.2rem;
+            background-size: cover;
+            position: relative;
+            .title{
+                color: #fff;
+                font-size: 36px;
+                font-weight: bolder;
+                opacity: 0.8;
+                text-align: center;
+                padding-top: 42px;
+                width: 92.85%;
+                @media screen and (max-width: 1440px){
+                    font-size: 26px;
+                }
+            }
+        }
+        .form{
+            position: absolute;
+            right: 0;
+            //width: 46%;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #141414;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            .wrapper{
+                width: 75%;
+                padding: .4rem 0;
+                .toolName{
+                    font-size: 22px;
+                    font-weight: 600;
+                    color: #4984CF;
+                }
+                .title{
+                    //font-size: 20px;
+                    //font-weight: 600;
+                    //color: #4984CF;
+                    color: #999;
+                }
+                .sub{
+                    color: #999;
+                    font-size: 12px;
+                    margin-bottom: 26px;
+                }
+                .inputRow{
+                    .input{
+                        padding: 10px 16px;
+                        color: #fff;
+                    }
+                    .icon{
+                        color: #fff;
+                        font-size: 20px;
+                        margin-right: 6px;
+                    }
+                }
+                .checkboxRow{
+                    margin-bottom: 26px;
+                }
+                .actionRow{
+                    margin-bottom: 26px;
+                }
+                .loginBtn{
+                    width: 100%;
+                    font-size: 20px;
+                    height: 50px;
+                    padding: 9px 18px;
+                }
+                .prompt{
+                    color: red;
+                    position: absolute;
+                }
+            }
+        }
+    }
+    .bottomInfo{
+        position: absolute;
+        bottom: 30px;
+        width: 100%;
+        text-align: center;
+        color: #fff;
+        opacity: .8;
+    }
+}
+
+.footer{
+    background-color: #333;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 10px 0;
+    line-height: 16px;
+    color: #fff;
+}
+
+.boxShadow{
+    -webkit-box-shadow: 0 0 16px rgba(0,0,0,0.3);
+    box-shadow: 0 0 16px rgba(0,0,0,0.3);
+}
