@@ -1,15 +1,30 @@
 import React, {Component} from 'react';
 import { Table, notification } from 'antd';
-import { connect } from 'react-redux';
 import Axios from 'axios';
-import Pagination from '@/settings/Pagination';
-import MusicAction from "@/lib/MusicAction";
-import { GetDuration } from "@/utils";
+import { Pagination, PaginationType } from '@/common/Pagination';
+import MusicAction from "./MusicAction";
+import { GetDuration } from "@/common/utils";
 import style from './Music.module.scss';
 
-const mapStateToProps = state => {return state};
+interface IProps { 
+    loading: boolean,
+    searchMusic: any,
+    onUpdate: () => void,
+    onAlbum: (record) => void,
+    onArtist: (record) => void,
+    onPlay: (id, record) => void,
+    onAddList: (record) => void,
+    onDownload: (id, record) => void,
+};
+interface IState { 
+    keyword: string,
+    type: string,
+    loading: boolean,
+    musicList: any[],
+    pagination: PaginationType;
+ }
 
-class MusicList extends Component{
+class MusicList extends Component<IProps, IState>{
     state = {
         loading: false,
         musicList: [],
@@ -117,4 +132,4 @@ class MusicList extends Component{
     }
 }
 
-export default connect(mapStateToProps)(MusicList)
+export default MusicList

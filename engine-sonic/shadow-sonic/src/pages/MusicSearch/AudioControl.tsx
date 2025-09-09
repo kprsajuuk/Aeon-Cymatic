@@ -1,14 +1,22 @@
 import React, { Component } from "react";
 import { Menu, Dropdown, Space, Popover, Slider, Switch, Button } from 'antd';
 import { CaretRightOutlined, PauseOutlined, NotificationOutlined, StepBackwardOutlined, StepForwardOutlined } from '@ant-design/icons';
-import { GetDuration, DownloadBlob } from '@/utils';
+import { GetDuration, DownloadBlob } from '@/common/utils';
 import style from './AudioControl.module.scss';
 
-export default class AudioControl extends Component{
+interface IProps { 
+    onAudioEnd: (num) => {},
+    src: any,
+    audioData: any,
+};
+interface IState { }
+
+export default class AudioControl extends Component<IProps, IState>{
+    audio; progressBar; animationEnded; canvas; ctx; audioCtx; audioSource; analyser; animationEnd; animationEndTimer
     state = {
         audioSource: '',
-        duration: '0:00',
-        current: '0:00',
+        duration: 0,
+        current: 0,
         paused: true,
         volume: 100,
         loop: false,
@@ -39,7 +47,7 @@ export default class AudioControl extends Component{
     initAudio = () => {
         let blob = new Blob([this.props.src.data]);
         if (!this.audioCtx){
-            this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            this.audioCtx = new (window.AudioContext)();
             this.audioSource = this.audioCtx.createMediaElementSource(document.querySelector('audio'));
             this.analyser = this.audioCtx.createAnalyser();
             this.analyser.fftSize = 256;
@@ -222,7 +230,7 @@ export default class AudioControl extends Component{
                         <div className={style.progressBar}>
                             <div id='progressBar' className={style.current}>
                                 <div id='currentProgressBar' className={style.progress}
-                                    style={{width: Math.round(100*current/duration, 0)+'%' || '0%'}}>
+                                    style={{width: Math.round(100*current/duration)+'%' || '0%'}}>
                                 </div>
                             </div>
                         </div>

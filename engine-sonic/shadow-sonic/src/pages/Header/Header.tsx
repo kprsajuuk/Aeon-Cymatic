@@ -3,14 +3,16 @@ import { CaretDownOutlined } from '@ant-design/icons';
 import { Avatar, Button, Dropdown, Modal, Switch, Tooltip, Menu } from 'antd';
 import type { MenuProps } from 'antd';
 import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from 'react-router-dom';
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
 import { postLogout } from '@/axios/api/User/User';
 import logo from "@/assets/img/favicon.ico";
 import style from './Header.module.scss';
 
 const items: MenuProps['items'] = [
-    //{ label: '系统设置', key: '5' },
+    { label: '搜索', key: 'search' },
+    { label: '可视化', key: 'visual' },
+    { label: '鼓点', key: 'beat' },
 ];
 const labelList = [
     {label: "注销", key: "logout"},
@@ -18,23 +20,13 @@ const labelList = [
 
 
 function Component(){
+    const navigate = useNavigate();
     const location = useLocation();
+    const path = location.pathname;
     const [creOpen, setCreOpen] = useState(false);
     const [menuActive, setMenuActive] = useState("0");
     const onJump = (key:string) => {
-        if (key === "1") {
-            window.location.href="/code/asset/project";
-        } else if (key === '2') {
-            window.location.href="/code/task/center";
-        } else if (key === '3') {
-            window.location.href="/code/system/config";
-        } else if (key === '4') {
-            window.location.href="/code/manage/user";
-        } else if (key === '5') {
-            window.location.href="/code/report/center";
-        } else if (key === '11') {
-            window.location.href="/code/hub/main";
-        }
+        navigate(`/cymatic/${key}`); 
     }
 
     const onLogout = () => {
@@ -68,30 +60,21 @@ function Component(){
     }
 
     useEffect(() => {
-        const path = location.pathname;
         switch(path){
-            case "/code/asset/project":
-                setMenuActive("1");
+            case "/cymatic/search":
+                setMenuActive("search");
                 break;
-            case "/code/task/center":
-                setMenuActive("2");
+            case "/cymatic/beat":
+                setMenuActive("beat");
                 break;
-            case "/code/system/config":
-                setMenuActive("3");
-                break;
-            case "/code/manage/user":
-                setMenuActive("4");
-                break;
-            case "/code/report/center":
-                setMenuActive("5");
-                break;
-            case "/code/hub/main":
-                setMenuActive("11");
+            case "/cymatic/visual":
+                setMenuActive("visual");
                 break;
             default:
                 break;
         }
-    }, [])
+    }, [path])
+    
     return (
         <div className={style.container}>
             <div className={style.logo} onClick={()=>{}}>
@@ -99,8 +82,7 @@ function Component(){
                 <p className={style.text}>CYMATIC</p>
             </div>
             <div className={style.menu}>
-                <Menu className={`headerMenu ${style.menuComponent}`} 
-                    selectedKeys={[menuActive]}
+                <Menu className={style.menuComponent} selectedKeys={[menuActive]}
                     onClick={e=>onJump(e.key)} mode="horizontal" items={items}/>
             </div>
             {/* <div className={style.theme}>

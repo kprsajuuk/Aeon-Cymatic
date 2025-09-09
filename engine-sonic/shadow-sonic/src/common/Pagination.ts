@@ -14,8 +14,8 @@ function Pagination(pageSize = 10, pageSizeOptions = ['10', '20', '50', '100']) 
         showTotal: ((total) => {
             return `共计${formatNumber(total)}条`;
         }),
-        size: 'small',
-        position: ['none', 'bottomRight'],
+        //size: "small",
+        //position: ['none', 'bottomRight'],
     };
 };
 
@@ -29,7 +29,7 @@ function PaginationSE(){
         showSizeChanger: false,
         showQuickJumper: false,
         total: 0,
-        size: 'small',
+        //size: 'small',
     };
 }
 
