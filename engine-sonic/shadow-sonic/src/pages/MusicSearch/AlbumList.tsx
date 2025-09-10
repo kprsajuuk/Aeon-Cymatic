@@ -2,19 +2,37 @@ import React, {Component} from 'react';
 import { Table, notification, Tooltip, Popover } from 'antd';
 import { PlusCircleOutlined, DashOutlined } from '@ant-design/icons';
 import Axios from 'axios';
-import moment from 'moment';
-import Pagination from '@/settings/Pagination';
-import LoadingImg from '@/lib/LoadingImg';
-import MusicAction from "@/lib/MusicAction";
-import { GetDuration } from "@/utils";
+import dayjs from 'dayjs';
+import { Pagination, PaginationType } from '@/common/Pagination';
+import LoadingImg from './LoadingImg';
+import MusicAction from "./MusicAction";
+import { GetDuration } from "@/common/utils";
 import style from "./Music.module.scss";
 
-export default class AlbumList extends Component{
+interface IProps { 
+    onPlay: (string, record) => void,
+    album: any,
+    onAddList: (record) => void,
+    onDownload: (id, record) => void,
+    onAddAlbum: (list) => void,
+    onArtist: (record) => void,
+    loading: boolean,
+};
+interface IState {
+    loading: boolean,
+    pagination: PaginationType,
+    musicList: any[],
+    albumInfo: any,
+ }
+
+export default class AlbumList extends Component<IProps, IState>{
     state = {
         loading: false,
         pagination: Pagination(),
         musicList: [],
-        albumInfo: {},
+        albumInfo: {
+            img: "", name: "", artist: "", company: "", publishTime: ""
+        },
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -83,7 +101,7 @@ export default class AlbumList extends Component{
                     <div className={style.emphasize}>《{albumInfo.name}》</div>
                     <div>歌手: {albumInfo.artist}</div>
                     <div>公司: {albumInfo.company}</div>
-                    <div>发行时间: {moment(albumInfo.publishTime).format('YYYY-MM-DD')}</div>
+                    <div>发行时间: {dayjs(albumInfo.publishTime).format('YYYY-MM-DD')}</div>
                     <Popover content={
                         <Tooltip title='添加专辑中的歌曲到歌单'>
                             <PlusCircleOutlined className='link' onClick={this.onAddAlbum}/>

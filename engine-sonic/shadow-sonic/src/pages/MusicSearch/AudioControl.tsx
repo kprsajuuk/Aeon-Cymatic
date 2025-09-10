@@ -4,8 +4,10 @@ import { CaretRightOutlined, PauseOutlined, NotificationOutlined, StepBackwardOu
 import { GetDuration, DownloadBlob } from '@/common/utils';
 import style from './AudioControl.module.scss';
 
+
 interface IProps { 
-    onAudioEnd: (num) => {},
+    onAudioEnd: (num) => void,
+    playMod: string,
     src: any,
     audioData: any,
 };
@@ -14,7 +16,7 @@ interface IState { }
 export default class AudioControl extends Component<IProps, IState>{
     audio; progressBar; animationEnded; canvas; ctx; audioCtx; audioSource; analyser; animationEnd; animationEndTimer
     state = {
-        audioSource: '',
+        audioSource: null,
         duration: 0,
         current: 0,
         paused: true,
@@ -219,7 +221,7 @@ export default class AudioControl extends Component<IProps, IState>{
         return (
             <div className={style.audioControl}>
                 <Popover content={extendAction} placement="bottomLeft"
-                          onVisibleChange={(v)=>this.setState({extendVisible: v})}>
+                          onOpenChange={(v)=>this.setState({extendVisible: v})}>
                     <Space className={style.interface} style={{boxShadow: extendVisible ? '0 0 5px #e5ce00' : 'none'}}>
                         <audio id="audioTag" src={audioSource}></audio>
                         <div className={style.item}>
@@ -240,14 +242,14 @@ export default class AudioControl extends Component<IProps, IState>{
                             </Popover>
                         </div>
                         <div className={style.item}>
-                            <Dropdown overlay={ActMenu} visible={actMenuVisible}
-                                    onVisibleChange={(v)=>this.setState({actMenuVisible: v})}>
+                            <Popover content={ActMenu} open={actMenuVisible}
+                                    onOpenChange={(v)=>this.setState({actMenuVisible: v})}>
                                 <Button size='small'>更多</Button>
-                            </Dropdown>
+                            </Popover>
                         </div>
                     </Space>
                 </Popover>
-                <div className={style.canvasContainer}>
+                <div className={style.canvasContainer} style={{display: "none"}}>
                     <div id='canvasContainer' style={{height: '100%', width: '100%'}}>
                         <canvas id='audioCanvas'/>
                     </div>

@@ -8,7 +8,7 @@ import style from './Music.module.scss';
 
 interface IProps { 
     loading: boolean,
-    searchMusic: any,
+    searchMusic?: any,
     onUpdate: () => void,
     onAlbum: (record) => void,
     onArtist: (record) => void,

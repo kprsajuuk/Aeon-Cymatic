@@ -9,8 +9,6 @@ import { notification, Tabs } from 'antd';
 import { DownloadBlob } from "@/common/utils";
 import style from './Music.module.scss';
 
-const { TabPane } = Tabs;
-
 export default class Music extends Component{
     state = {
         tab: 'music',
@@ -163,38 +161,41 @@ export default class Music extends Component{
             <AudioControl src={this.state.audioSrc} audioData={audioData} playMod={playMod}
                           onAudioEnd={this.onAudioEnd}/>
         );
+
+        const tabItems = [
+            { label: '歌曲', key: 'music', 
+                children: <MusicList loading={loading}
+                            onUpdate={()=>this.setState({tab: 'music'})}
+                            onPlay={this.onPlay} onAddList={this.onAddList} 
+                            onDownload={this.fetchDownload}
+                            onAlbum={this.onAlbum} onArtist={this.onArtist}/>
+            },
+            { label: '专辑', key: 'album', 
+                children: <AlbumList loading={loading}
+                            album={this.state.album}
+                            onPlay={this.onPlay} onAddList={this.onAddList} onDownload={this.fetchDownload}
+                            onArtist={this.onArtist} onAddAlbum={this.onAddAlbum}/>
+            },
+            { label: '歌手', key: 'artist', 
+                children: <ArtistList loading={loading} 
+                            artist={this.state.artist}
+                            onPlay={this.onPlay} onAddList={this.onAddList} onDownload={this.fetchDownload}
+                            onAlbum={this.onAlbum}/>
+            },
+            { label: '播放列表', key: 'play', 
+                children: <PlayList loading={loading}
+                            recentList={recentList}
+                            customList={customList}
+                            currentType={currentPlayList} audioData={audioData}
+                            onPlay={this.onPlay} onAddList={this.onAddList} onDownload={this.fetchDownload}
+                            onArtist={this.onArtist} onUpdate={this.updatePlayList}
+                            onModChange={(v)=>this.setState({playMod: v})}/>
+            },
+        ]
         return (
             <div className={style.music}>
-                <Tabs activeKey={this.state.tab} tabBarExtraContent={TabExtra}
-                        onChange={(v)=>this.setState({tab: v})}>
-                    <TabPane tab="歌曲" key="music" forceRender>
-                        <MusicList loading={loading}
-                                   onUpdate={()=>this.setState({tab: 'music'})}
-                                   onPlay={this.onPlay} onAddList={this.onAddList} onDownload={this.fetchDownload}
-                                   onAlbum={this.onAlbum} onArtist={this.onArtist}/>
-                    </TabPane>
-                    <TabPane tab="专辑" key="album" forceRender>
-                        <AlbumList loading={loading}
-                                   album={this.state.album}
-                                   onPlay={this.onPlay} onAddList={this.onAddList} onDownload={this.fetchDownload}
-                                   onArtist={this.onArtist} onAddAlbum={this.onAddAlbum}/>
-                    </TabPane>
-                    <TabPane tab="歌手" key="artist" forceRender>
-                        <ArtistList loading={loading} 
-                                    artist={this.state.artist}
-                                    onPlay={this.onPlay} onAddList={this.onAddList} onDownload={this.fetchDownload}
-                                    onAlbum={this.onAlbum}/>
-                    </TabPane>
-                    <TabPane tab="播放列表" key="play" forceRender>
-                        <PlayList loading={loading}
-                                  recentList={recentList}
-                                  customList={customList}
-                                  currentType={currentPlayList} audioData={audioData}
-                                  onPlay={this.onPlay} onAddList={this.onAddList} onDownload={this.fetchDownload}
-                                  onArtist={this.onArtist} onUpdate={this.updatePlayList}
-                                  onModChange={(v)=>this.setState({playMod: v})}/>
-                    </TabPane>
-                </Tabs>
+                <Tabs activeKey={this.state.tab} tabBarExtraContent={TabExtra} items={tabItems}
+                        onChange={(v)=>this.setState({tab: v})}/>
             </div>
         )
     }

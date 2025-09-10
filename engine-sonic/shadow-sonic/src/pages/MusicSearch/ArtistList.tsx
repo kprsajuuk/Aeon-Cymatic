@@ -1,22 +1,36 @@
 import React, {Component} from 'react';
 import { Table, notification, Tabs } from 'antd';
 import Axios from 'axios';
-import moment from 'moment';
-import Pagination from '@/settings/Pagination';
-import LoadingImg from '@/lib/LoadingImg';
-import MusicAction from "@/lib/MusicAction";
-import { GetDuration } from "@/utils";
+import dayjs from 'dayjs';
+import { Pagination, PaginationType } from '@/common/Pagination';
+import LoadingImg from './LoadingImg';
+import MusicAction from "./MusicAction";
+import { GetDuration } from "@/common/utils";
 import style from "./Music.module.scss";
 
-const { TabPane } = Tabs;
+interface IProps { 
+    onPlay: (string, record) => void,
+    artist: any,
+    onAddList: (record) => void,
+    onDownload: (id, record) => void,
+    onAlbum: (record) => void,
+    loading: boolean,
+};
+interface IState {
+    artistInfo: any,
+    loading: boolean,
+    pagination: PaginationType,
+    hotList: any[],
+    albumList: any[],
+ }
 
-export default class artistList extends Component{
+export default class artistList extends Component<IProps, IState>{
     state = {
         loading: false,
         pagination: Pagination(),
         hotList: [],
         albumList: [],
-        artistInfo: {},
+        artistInfo: { img: "", name: "" },
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -99,10 +113,38 @@ export default class artistList extends Component{
             	render: (text, record) => (
             		<span className='link' onClick={()=>this.onAlbumClick(record)}>《{text}》</span>
             	)},
-            {title: '发行日期', dataIndex: 'publishTime', key: 'publishTime', render: (text) => (moment(text).format('YYYY-MM-DD'))},
+            {title: '发行日期', dataIndex: 'publishTime', key: 'publishTime', render: (text) => (dayjs(text).format('YYYY-MM-DD'))},
             {title: '公司', dataIndex: 'company', key: 'company'},
             {title: '歌曲数量', dataIndex: 'size', key: 'size'},
         ];
+
+        const tabItems = [
+            { label: 'Top50', key: 'music', 
+                children: <Table dataSource={this.state.hotList}
+                            loading={loading}
+                            pagination={false}
+                            scroll={{y:window.innerHeight-268}}
+                            size='small'
+                            columns={musicColumns} rowKey='id'/> 
+            },
+            { label: '专辑', key: 'album', 
+                children: <Table dataSource={this.state.albumList}
+                            loading={loading}
+                            pagination={this.state.pagination}
+                            onChange={(pagination) => {
+                                this.setState({
+                                    pagination: {
+                                        ...this.state.pagination,
+                                        current: pagination.current,
+                                        pageSize: pagination.pageSize
+                                    }
+                                }, () => {this.fetchArtistAlbum()})
+                            }}
+                            size='small'
+                            scroll={{y:window.innerHeight-268}}
+                            columns={albumColumns} rowKey='albumId'/>
+            },
+        ]
 
         return (
             <div className={style.album}>
@@ -110,33 +152,7 @@ export default class artistList extends Component{
                 	<LoadingImg minHeight={100} src={artistInfo.img}/>
                     <div className={style.emphasize}>{artistInfo.name}</div>
                 </div>}
-                <Tabs type="card" tabPosition='left' size='small'>
-		          	<TabPane tab="Top50" key="music">
-		            	<Table dataSource={this.state.hotList}
-		                       loading={loading}
-		                       pagination={false}
-		                       scroll={{y:window.innerHeight-268}}
-		                       size='small'
-		                       columns={musicColumns} rowKey='id'/>
-		          	</TabPane>
-		          	<TabPane tab="专辑" key="album">
-		          	  	<Table dataSource={this.state.albumList}
-		                       loading={loading}
-		                       pagination={this.state.pagination}
-		                       onChange={(pagination) => {
-		                            this.setState({
-		                                pagination: {
-		                                    ...this.state.pagination,
-		                                    current: pagination.current,
-		                                    pageSize: pagination.pageSize
-		                                }
-		                            }, () => {this.fetchArtistAlbum()})
-		                       }}
-		                       size='small'
-		                       scroll={{y:window.innerHeight-268}}
-		                       columns={albumColumns} rowKey='albumId'/>
-		         	</TabPane>
-		        </Tabs>
+                <Tabs type="card" tabPosition='left' size='small' items={tabItems}/>
             </div>
         )
     }
