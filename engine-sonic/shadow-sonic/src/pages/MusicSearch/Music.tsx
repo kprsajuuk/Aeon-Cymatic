@@ -6,7 +6,7 @@ import AlbumList from "./AlbumList";
 import ArtistList from "./ArtistList";
 import PlayList from "./PlayList";
 import { notification, Tabs } from 'antd';
-import { DownloadBlob } from "@/utils";
+import { DownloadBlob } from "@/common/utils";
 import style from './Music.module.scss';
 
 const { TabPane } = Tabs;
@@ -16,7 +16,7 @@ export default class Music extends Component{
         tab: 'music',
         loading: false,
         audioSrc: '',
-        audioData: {},
+        audioData: {id: undefined},
         album: {},
         artist: {},
         recentList: [],
@@ -114,7 +114,7 @@ export default class Music extends Component{
             let list = JSON.parse(window.localStorage.getItem(this.state.currentPlayList)) || [];
             let index = -1;
             list.forEach((item, i) => {
-                if (item.id === this.state.audioData.id){index = i}
+                if (item.id === this.state?.audioData?.id){index = i}
             });
             if (index >= 0){
                 index += next >= 0 ? 1 : -1;

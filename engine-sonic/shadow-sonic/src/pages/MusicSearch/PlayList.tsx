@@ -1,14 +1,36 @@
 import React, {Component} from 'react';
 import { Table, Tabs, Switch } from 'antd';
 import { CloseOutlined, SyncOutlined, CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons';
-import Pagination from '@/settings/Pagination';
-import MusicAction from "@/lib/MusicAction";
-import { GetDuration } from "@/utils";
+import { Pagination, PaginationType } from '@/common/Pagination';
+import MusicAction from "./MusicAction";
+import { GetDuration } from "@/common/utils";
 import style from './Music.module.scss';
 
 const { TabPane } = Tabs;
+interface IProps { 
+    loading: boolean,
+    searchMusic: any,
+    customList: any[],
+    recentList: any[], 
+    currentType: string, 
+    audioData: any,
+    onUpdate: (type, act, record, num?) => void,
+    onAlbum: (record) => void,
+    onArtist: (record) => void,
+    onPlay: (id, record, type) => void,
+    onAddList: (record) => void,
+    onDownload: (id, record) => void,
+    onModChange: (v) => void
+};
+interface IState { 
+    listType: string,
+    loading: boolean,
+    editMod: boolean,
+    customPagination: PaginationType;
+    recentPagination: PaginationType;
+ }
 
-export default class PlayList extends Component{
+export default class PlayList extends Component<IProps, IState>{
     state = {
         loading: false,
         editMod: false,
@@ -96,11 +118,11 @@ export default class PlayList extends Component{
                 <div className={style.header}>
                     <div className={style.item}>
                         <div className={style.text}>编辑</div>
-                        <Switch size='middle' onChange={(v)=>this.setState({editMod: v})}/>
+                        <Switch  onChange={(v)=>this.setState({editMod: v})}/>
                     </div>
                     <div className={style.item}>
                         <div className={style.text}>列表播放</div>
-                        <Switch size='middle' onChange={(v)=>this.onModChange(v ? 'list' : 'solo')}/>
+                        <Switch onChange={(v)=>this.onModChange(v ? 'list' : 'solo')}/>
                     </div>
                 </div>
                 <Tabs type="card" tabPosition='left' size='small' activeKey={this.state.listType}
@@ -155,7 +177,13 @@ export default class PlayList extends Component{
     }
 }
 
-class ArrowAction extends Component{
+
+interface ArrowIProps { 
+    onArrow: (num) => void,
+};
+interface ArrowIState { 
+ }
+class ArrowAction extends Component<ArrowIProps, ArrowIState>{
     state = {};
     render(){
         return (

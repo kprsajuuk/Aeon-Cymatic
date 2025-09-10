@@ -33,8 +33,8 @@
         width: 100%;
         .menuComponent {
             color: #fff;
-            line-height: 56px;
-            border-bottom: 1px solid #4984CF;
+            line-height: 60px;
+            margin: 0 auto;
         }
 
         .btn {
@@ -73,7 +73,7 @@
         line-height: 40px;
         flex-wrap: nowrap;
         flex-shrink: 0;
-
+        margin-left: 60px;
         .avatar {}
 
         .name {
