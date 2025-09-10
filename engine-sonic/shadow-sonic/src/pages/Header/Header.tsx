@@ -9,10 +9,13 @@ import { postLogout } from '@/axios/api/User/User';
 import logo from "@/assets/img/favicon.ico";
 import style from './Header.module.scss';
 
+const menuLabel = (label) => (
+    <div style={{minWidth: 80, textAlign: 'center'}}>{label}</div>
+)
 const items: MenuProps['items'] = [
-    { label: '搜索', key: 'search' },
-    { label: '可视化', key: 'visual' },
-    { label: '鼓点', key: 'beat' },
+    { label: menuLabel("搜索"), key: 'search' },
+    { label: menuLabel("可视化"), key: 'visual' },
+    { label: menuLabel("鼓点"), key: 'beat' },
 ];
 const labelList = [
     {label: "注销", key: "logout"},

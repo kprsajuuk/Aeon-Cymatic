@@ -193,24 +193,15 @@ export default class AudioControl extends Component<IProps, IState>{
                 </div>
             </div>
         );
+
+        const menuItems = [
+            {label: "下载", key: "download", onClick: this.onDownload, disabled: !audioSource },
+            {label: <div><Space>循环<Switch onChange={(v)=>this.setState({loop: v})}/></Space></div>, key: "loopBtn"},
+            {label: <div><Space>效果<Switch onChange={this.onVisualChange}/></Space></div>, key: "visualBtn"},
+        ]
+
         const ActMenu = (
-            <Menu onClick={(e)=>{if (e.key === 'downloadBtn'){this.setState({actMenuVisible: false})}}}>
-                <Menu.Item key='downloadBtn' disabled={!audioSource} onClick={this.onDownload}>
-                    下载
-                </Menu.Item>
-                <Menu.Item key='loopBtn'>
-                    <Space>
-                        循环<Switch checkedChildren="开" unCheckedChildren="关"
-                                  onChange={(v)=>this.setState({loop: v})}/>
-                    </Space>
-                </Menu.Item>
-                <Menu.Item key='visualBtn'>
-                    <Space>
-                        效果<Switch checkedChildren="开" unCheckedChildren="关"
-                                  onChange={this.onVisualChange}/>
-                    </Space>
-                </Menu.Item>
-            </Menu>
+            <Menu items={menuItems} />
         );
         const Volume = (
             <div className={style.volumePop}>
@@ -249,7 +240,7 @@ export default class AudioControl extends Component<IProps, IState>{
                         </div>
                     </Space>
                 </Popover>
-                <div className={style.canvasContainer} style={{display: "none"}}>
+                <div className={style.canvasContainer}>
                     <div id='canvasContainer' style={{height: '100%', width: '100%'}}>
                         <canvas id='audioCanvas'/>
                     </div>

@@ -1,0 +1,20 @@
+.main {
+    padding: 20px;
+    margin-bottom: 20px;
+    .container {
+        .box {
+            line-height: 30px;
+            padding: 12px 20px; 
+            background: #ffffff11;
+        }
+        .title {
+            color: gold;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .subTitle {
+            color: #ccc;
+            font-size: 18px;
+        }
+    }
+}
