@@ -20,8 +20,9 @@ function Component(){
     const [stepsEachBar, setStepsEachBar] = useState({value:16, min: 1, max: 32});
     const [rhyStyle, setRhyStyle] = useState("simple");
 
+    const [patternConfig, setPatternConfig] = useState({bpm, bar, complexity, stepsEachBar, rhyStyle})
     const [pattern, setPattern] = useState([]);
-    const baseChance = 0.2 + (complexity.value * 0.05);
+    const baseChance = (complexity.value * 0.06);
 
     const rhyStyleOptions = [
         { label: "简单节奏", value: "simple"},
@@ -31,11 +32,11 @@ function Component(){
     ]
 
     const downloadMidi = () => {
-        exportMidi(pattern, bpm, bar);
-        //generateBeatMidi(bpm);
+        exportMidi(pattern, bpm.value, bar.value, stepsEachBar.value);
     }
 
     const generatePattern = () => {
+        setPatternConfig({bpm, bar, complexity, stepsEachBar, rhyStyle})
         let totalSteps = bar.value * stepsEachBar.value;
         let newPattern = getPattern(rhyStyle, instruments, totalSteps, baseChance)
         setPattern(newPattern);
@@ -92,8 +93,8 @@ function Component(){
                             <div key={element.name} style={{height: 40}}>
                                 {element.steps.map((note, index) => (
                                     <div style={{display: 'inline-block', height: 40}}>
-                                        {index !== 0 && index % stepsEachBar.value === 0 &&
-                                        <div style={{height: "100%", boxSizing: 'border-box', margin: "0 10px", border: '1px solid gold', display: 'inline-block'}}></div>}
+                                        {index !== 0 && index % patternConfig.stepsEachBar.value === 0 &&
+                                        <div style={{height: "100%", boxSizing: 'border-box', margin: "0 10px", border: '1px dashed #faad1488', display: 'inline-block'}}></div>}
                                         <div style={{width: 30, height: 30,  margin: 5, display: 'inline-block', background: note ? '#faad14': '#ffffff11', cursor: 'pointer'}} key={index}></div>
                                     </div>
                                 ))}

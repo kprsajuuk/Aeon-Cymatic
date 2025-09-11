@@ -50,14 +50,12 @@ const DownloadBlob = (data, name='') => {
     URL.revokeObjectURL(objectUrl);
 };
 
-const GetDuration = (str, unit='milliseconds') => {
-    let duration = dayjs.duration(str);
-    let hour = duration.hours() > 1 ? duration.hours() + 'h' : '';
-    let minute = duration.minutes() + ':';
-    let second = duration.seconds().toString();
-    if (minute.length < 3){minute = '0' + minute}
-    if (second.length < 2){second = '0' + second}
-    return hour + minute + second;
+const GetDuration = (time, unit:any="milliseconds") => {
+    const d = dayjs.duration(time, unit);
+    const hours = String(Math.floor(d.asHours())).padStart(2, "0");
+    const minutes = String(d.minutes()).padStart(2, "0");
+    const sec = String(d.seconds()).padStart(2, "0");
+    return `${hours}:${minutes}:${sec}`;
 }
 
 export {
