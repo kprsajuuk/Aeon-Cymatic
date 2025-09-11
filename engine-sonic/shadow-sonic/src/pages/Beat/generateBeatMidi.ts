@@ -1,5 +1,7 @@
 import { writeMidi } from "midi-file";
 
+let patternStyle = () => {};
+
 function generateBeatMidi(bpm){
     // 定义简单鼓点音色 (General MIDI Percussion channel 10)
     const drumMap = {
@@ -65,6 +67,66 @@ function generateBeatMidi(bpm){
     URL.revokeObjectURL(url);
 };
 
+function simpleStyle (instrument, step, defaultChance) {
+    switch (instrument) {
+        case "Kick":
+            if (step % 4 === 0) return 0.9;
+            break
+        case "Snare":
+            if (step % 8 === 4) return 0.9
+            break
+        case "Closed Hi-Hat":
+            return 0.7
+        default:
+            break;
+    }
+    return defaultChance;
+}
+
+function rockStyle (instrument, step, defaultChance) {
+    switch (instrument) {
+        case "Kick":
+            if (step % 4 === 0 || step % 8 === 6) return 0.8;
+            break
+        case "Snare":
+            if (step % 8 === 4) return 0.9
+            break
+        case "Closed Hi-Hat":
+            return 0.6
+        default:
+            break;
+    }
+    return defaultChance;
+}
+
+function getPattern (style, instruments, totalSteps, defaultChance) {
+    switch (style) {
+        case "simple": 
+            return loop(instruments, totalSteps, defaultChance, simpleStyle)
+        case "rock": 
+            return loop(instruments, totalSteps, defaultChance, rockStyle)
+        case "jazz": 
+            return loop(instruments, totalSteps, defaultChance, simpleStyle)
+        case "random": 
+            return loop(instruments, totalSteps, defaultChance, simpleStyle)
+        default:
+            return [];
+    }
+}
+
+function loop (instruments, totalSteps, defaultChance, patternFunc) {
+    let newPattern = instruments.map((item) => {
+        let steps =[];
+        for (let i=0; i<totalSteps; i++) {
+            let chance = patternFunc(item.name, i, defaultChance);
+            let activate = Math.random() < chance ? 1 : 0
+            steps.push(activate);
+        }
+        return { name: item.name, note: item.note, steps };
+    });
+    return newPattern;
+}
+
 const exportMidi = (pattern, bpm, bars) => {
     if (pattern.length === 0) return;
 
@@ -125,6 +187,6 @@ const exportMidi = (pattern, bpm, bars) => {
 };
 
 export {
-    generateBeatMidi,
-    exportMidi
+    exportMidi,
+    getPattern
 }

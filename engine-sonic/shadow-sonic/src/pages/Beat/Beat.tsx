@@ -1,25 +1,27 @@
-import { Button, Card, Typography, InputNumber, Select, Slider, Table, Row, Col } from "antd";
+import { Button, Card, Typography, InputNumber, Select, Slider, Table, Row, Col, Divider } from "antd";
 import { useState } from "react";
-import { exportMidi } from "./generateBeatMidi";
+import { exportMidi, getPattern } from "./generateBeatMidi";
 import style from "./Beat.module.scss";
 
 const { Title } = Typography;
 
 const instruments = [
-  { name: "Kick", note: 36 },
-  { name: "Snare", note: 38 },
-  { name: "Closed Hi-Hat", note: 42 },
-  { name: "Open Hi-Hat", note: 46 },
-  { name: "Tom Low", note: 45 },
+    { name: "Kick", note: 36 },
+    { name: "Snare", note: 38 },
+    { name: "Closed Hi-Hat", note: 42 },
+    { name: "Open Hi-Hat", note: 46 },
+    { name: "Tom Low", note: 45 },
 ];
 
 function Component(){
-    const [bpm, setBpm] = useState(120);
+    const [bpm, setBpm] = useState({value:120, min: 60, max: 200});
+    const [bar, setBar] = useState({value:4, min: 1, max: 16});
+    const [complexity, setComplexity] = useState({value:5, min: 1, max: 16});
+    const [stepsEachBar, setStepsEachBar] = useState({value:16, min: 1, max: 32});
     const [rhyStyle, setRhyStyle] = useState("simple");
-    const [bar, setBar] = useState(4);
-    const [complexity, setComplexity] = useState(5);
 
     const [pattern, setPattern] = useState([]);
+    const baseChance = 0.2 + (complexity.value * 0.05);
 
     const rhyStyleOptions = [
         { label: "简单节奏", value: "simple"},
@@ -34,40 +36,10 @@ function Component(){
     }
 
     const generatePattern = () => {
-        const stepsPerBar = 16; // 每小节 16 步
-        const totalSteps = bar * stepsPerBar;
-
-        const newPattern = instruments.map((inst) => {
-        return {
-            name: inst.name,
-            note: inst.note,
-            steps: Array.from({ length: totalSteps }, () =>
-            Math.random() * 10 < complexity ? 1 : 0
-            ),
-        };
-        });
-
+        let totalSteps = bar.value * stepsEachBar.value;
+        let newPattern = getPattern(rhyStyle, instruments, totalSteps, baseChance)
         setPattern(newPattern);
     };
-
-    const columns = [
-        { title: "Instrument", dataIndex: "name", key: "name" },
-        ...Array.from({ length: bar * 16 }, (_, i) => ({
-        title: `${i + 1}`,
-        dataIndex: `step${i}`,
-        key: `step${i}`,
-        render: (value) =>
-            value === 1 ? <div style={{ color: "red" }}>●</div> : <div>·</div>,
-        })),
-    ];
-
-    const dataSource = pattern.map((row, i) => {
-        const rowData = { key: i, name: row.name };
-        row.steps.forEach((val, step) => {
-        rowData[`step${step}`] = val;
-        });
-        return rowData;
-    });
 
     return (
         <div className={style.main}>
@@ -75,7 +47,7 @@ function Component(){
                 <div className={style.box}>
                     <div className={style.title}>节奏</div>
                     <div className={style.subTitle}>BPM</div>
-                    <NumberSlider value={bpm} min={10} max={200} onChange={v=>setBpm(v)}/>
+                    <NumberSlider value={bpm.value} min={bpm.min} max={bpm.max} onChange={v=>setBpm({...bpm, value: v})}/>
                 </div>
 
                 <div className={style.box}>
@@ -83,14 +55,21 @@ function Component(){
                     <Row gutter={[20,20]}>
                         <Col span={12}>
                             <div className={style.subTitle}>小节</div>
-                            <NumberSlider value={bar} min={1} max={16} onChange={v=>setBar(v)}/>
+                            <NumberSlider value={bar.value} min={bar.min} max={bar.max} onChange={v=>setBar({...bar, value:v})}/>
+                            <div className={style.subTitle}>每小节steps</div>
+                            <NumberSlider value={stepsEachBar.value} min={stepsEachBar.min} max={stepsEachBar.max} onChange={v=>setStepsEachBar({...stepsEachBar, value: v})}/>
                             
+                        </Col>
+                        <Col span={12}>
+                            <div className={style.subTitle}>复杂度</div>
+                            <NumberSlider value={complexity.value} min={complexity.min} max={complexity.max} onChange={v=>setComplexity({...complexity, value: v})}/>
+                            
+                        </Col>
+                        <Col span={12}>
                             <div className={style.subTitle}>模式</div>
                             <Select options={rhyStyleOptions} value={rhyStyle} onChange={v=>setRhyStyle(v)} style={{width: 120, marginTop: 12}}/>
                         </Col>
                         <Col span={12}>
-                            <div className={style.subTitle}>复杂度</div>
-                            <NumberSlider value={complexity} min={1} max={16} onChange={v=>setComplexity(v)}/>
                             <div className={style.subTitle} style={{textAlign: 'right'}}>操作</div>
                             <div style={{textAlign: 'right', marginTop: 12}}>
                                 <Button type="primary" onClick={downloadMidi} style={{marginRight: 12}} disabled={pattern.length===0}>下载 MIDI</Button>
@@ -100,16 +79,28 @@ function Component(){
                     </Row>
                     
                 </div>
-                {pattern.length > 0 && (
-                    <Table
-                        size="small"
-                        pagination={false}
-                        columns={columns}
-                        dataSource={dataSource}
-                        scroll={{ x: true }}
-                    />
-                )}
-
+                <Divider/>
+                {pattern.length > 0 &&
+                <div style={{ padding: "0 12px", display: 'flex'}}>
+                    <div style={{flexShrink: 0, width: 110, padding: "6px 0", marginRight: 12, lineHeight: "40px"}}>
+                        {pattern.map(element => (
+                            <div key={element.name}>{element.name}</div>
+                        ))}
+                    </div>
+                    <div style={{width: '100%', overflow: 'auto', whiteSpace: "nowrap", border: '1px solid #666', padding: 6}}>
+                        {pattern.map(element => (
+                            <div key={element.name} style={{height: 40}}>
+                                {element.steps.map((note, index) => (
+                                    <div style={{display: 'inline-block', height: 40}}>
+                                        {index !== 0 && index % stepsEachBar.value === 0 &&
+                                        <div style={{height: "100%", boxSizing: 'border-box', margin: "0 10px", border: '1px solid gold', display: 'inline-block'}}></div>}
+                                        <div style={{width: 30, height: 30,  margin: 5, display: 'inline-block', background: note ? '#faad14': '#ffffff11', cursor: 'pointer'}} key={index}></div>
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                </div>}
             </div>
         </div>
     )
