@@ -16,17 +16,16 @@ const items: MenuProps['items'] = [
     { label: menuLabel("搜索"), key: 'search' },
     { label: menuLabel("可视化"), key: 'visual' },
     { label: menuLabel("鼓点"), key: 'beat' },
+    { label: menuLabel("MIDIbook"), key: 'notebook' },
 ];
 const labelList = [
     {label: "注销", key: "logout"},
 ]
 
-
 function Component(){
     const navigate = useNavigate();
     const location = useLocation();
     const path = location.pathname;
-    const [creOpen, setCreOpen] = useState(false);
     const [menuActive, setMenuActive] = useState("0");
     const onJump = (key:string) => {
         navigate(`/cymatic/${key}`); 
@@ -51,9 +50,6 @@ function Component(){
     
     const onSelect = (item) => {
         switch(item.key){
-            case "cre":
-                setCreOpen(true)
-                return;
             case "logout":
                 onLogout();
                 return;
@@ -73,6 +69,9 @@ function Component(){
             case "/cymatic/visual":
                 setMenuActive("visual");
                 break;
+            case "/cymatic/notebook":
+                setMenuActive("notebook");
+                break;
             default:
                 break;
         }
@@ -85,7 +84,7 @@ function Component(){
                 <p className={style.text}>CYMATIC</p>
             </div>
             <div className={style.menu}>
-                <Menu className={style.menuComponent} selectedKeys={[menuActive]}
+                <Menu className={style.menuComponent} selectedKeys={[menuActive]} style={{maxWidth: '100%'}}
                     onClick={e=>onJump(e.key)} mode="horizontal" items={items}/>
             </div>
             {/* <div className={style.theme}>
@@ -104,7 +103,7 @@ function Component(){
                         <Avatar style={{ backgroundColor: '#faad14', color: '#333' }} size={36}>U</Avatar>
                     </Tooltip>
                 </div>
-                <Dropdown menu={{ items: labelList, onClick: onSelect }} >
+                <Dropdown menu={{ items: labelList, onClick: onSelect }} placement='bottomRight'>
                     <div className={style.name}>
                         <span className={style.text}>user</span>
                         <CaretDownOutlined className={style.icon} />

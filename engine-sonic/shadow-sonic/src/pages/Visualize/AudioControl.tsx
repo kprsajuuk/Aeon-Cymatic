@@ -5,12 +5,12 @@ import { GetDuration } from '@/common/utils';
 
 function Component(props){
     const { 
-        paused=true, current=0, duration=10, volume=50, graphType="basic", visual, loop,
-        onGraphTypeChange=()=>{}, onSwitchPlay=()=>{}, onAudioFile=()=>{}, onVolumnChange, onLoopChange, onVisualChange
+        paused=true, progress, volume=50, graphType="basic", visual, loop,
+        onGraphTypeChange, onSwitchPlay, onAudioFile, onVolumnChange, onLoopChange, onVisualChange, onTimeChange
     } = props;
     const [visible, setVisible] = useState(false);
     const [fileName, setFileName] = useState("未选择文件");
-
+    const { current=0, duration=10 } = progress;
     const onPlay = () => {
         onSwitchPlay();
     }
@@ -28,9 +28,10 @@ function Component(props){
     ]
 
     const graphTypeList = [
-        {label: "spectrum", value: "spectrum"}, 
-        {label: "waveform", value: "waveform"}, 
-        {label: "basic2", value: "basic2"}, 
+        {label: "Spectrum", value: "spectrum"}, 
+        {label: "Waveform", value: "waveform"}, 
+        {label: "Circular", value: "circular"}, 
+        {label: "Particle", value: "particle"}, 
     ]
 
     return (
@@ -55,11 +56,13 @@ function Component(props){
 
             <div style={{marginLeft: 12, flexShrink: 0}}>{GetDuration(current, 'seconds')}/{GetDuration(duration, 'seconds')}</div>
 
-            <Progress strokeColor="#faad14" style={{marginLeft: 20, width: '100%'}} percent={100*current/duration} showInfo={false} size={{height: 10}}/>
+            <Slider style={{marginLeft: 20, width: '100%'}} max={duration} min={0} value={current} tooltip={{formatter: v=>GetDuration(current, 'seconds')}}
+                onChange={onTimeChange}/>
+            {/* <Progress strokeColor="#faad14" style={{marginLeft: 20, width: '100%'}} percent={100*current/duration} showInfo={false} size={{height: 10}}/> */}
             
             <Select style={{width: 100, marginLeft: 12, flexShrink: 0}} options={graphTypeList} value={graphType} onChange={onGraphTypeChange}/>
 
-            <Popover placement="bottom" content={Volume}>
+            <Popover placement="bottomRight" content={Volume}>
                 <MutedFilled style={{color:"#faad14", cursor: 'pointer', flexShrink: 0, marginLeft: 12}}/>
             </Popover>
 
