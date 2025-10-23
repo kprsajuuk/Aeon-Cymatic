@@ -1,0 +1,186 @@
+.main {
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+    .container {
+        position: relative;
+    }
+}
+
+.noteCard {
+    background: #333;
+    border: 1px solid rgba(247, 215, 150, 0.386);
+    border-radius: 6px;
+    position: relative;
+    box-shadow: 0 0px 12px #faad1466;
+    .infoRow {
+        padding: 12px 20px;
+        .title {
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .time {
+            color: #999;
+            margin-top: 4px;
+        }
+    }
+    
+    .actionRow {
+        border-top: 1px solid #faad1466;
+        background: #444;
+        .btnCol {
+            text-align: center;
+            line-height: 30px;
+            cursor: pointer;
+            &:hover {
+                background: #555;
+            }
+        }
+    }
+}
+
+.noteDetail {
+    margin-bottom: 40px;
+    .infoPanel {
+        border: 1px solid #faad1466;
+        border-radius: 6px;
+        padding: 30px;
+        background: #faad1411;
+        margin-bottom: 20px;
+        position: relative;
+        .subTitle {
+            color: #fff;
+            font-size: 18px;
+        }
+    }
+    .config {
+        border-radius: 6px 6px 0 0;
+        padding: 30px;
+        background: #faad1499;
+        margin-bottom: 20px;
+        .subTitle {
+            color: #fff;
+            font-size: 18px;
+        }
+    }
+    .notebook {
+        display: flex;
+        position: relative;
+        //overflow: hidden;
+        .keyColumn {
+            margin-top: 21px;
+            flex-shrink: 0;
+            width: 70px;
+            user-select: none;  
+            .key {
+                box-sizing: border-box;
+                border-bottom: 2px solid #00000066;
+                color: #333;
+                padding: 0 12px;
+                background: #fff;
+                font-weight: bold;
+                cursor: pointer;
+                &.black {
+                    background: #333;
+                    color: #fff;
+                }
+                &:hover {
+                    opacity: 0.8;
+                }
+            }
+        }
+        .midiBox {
+            width: 100%;
+            overflow-x: auto;
+            background: #333;
+            border-left: 1px solid #333;
+            display: inline-block;
+            position: relative;
+            .topIndex {
+                display: flex;
+                user-select: none;  
+                .text {
+                    box-sizing: border-box;
+                    flex-shrink: 0;
+                    height: 20px;
+                    text-align: center;
+                    color: #666;
+                }
+            }
+            .row {
+                display: flex;
+                .node {
+                    flex-shrink: 0;
+                    box-sizing: border-box;
+                    display: inline-block;
+                    background: #333;
+                    border: 1px solid #00000066;
+                    cursor: pointer;
+                    &:hover {
+                        opacity: 0.8;
+                    }
+                    &.dark {
+                        background: #444;
+                    }   
+                    &.light {
+                        background: #555;
+                    }
+                }
+            }
+            .nodesOverlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                //right: 0;
+                .indicator {
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    width: 2px;
+                    background: #a8071a;
+                    transition: left 0.05s linear;
+                }
+                .nodeBlock {
+                    position: absolute;
+                    box-sizing: border-box;
+                    background: #faad14;
+                    border-radius: 2px;
+                    color: #333;
+                    font-size: 14px;
+                    text-align: left;
+                    padding: 0 12px;
+                    overflow: hidden;
+                    border: 1px solid #333;
+                    cursor: move;
+                    user-select: none;
+                    .pitch {
+                        cursor: default;
+                        user-select: none;  
+                    }
+                    .leftSide, .rightSide {
+                        position: absolute;
+                        top: 0;
+                        width: 6px;
+                        height: 100%;
+                        cursor: ew-resize;
+                        background: rgba(255,255,255,0.3);
+                    }
+
+                    .leftSide {
+                        left: 0;
+                    }
+                    .rightSide {
+                        right: 0;
+                    }
+                }
+            }
+        }
+    }
+    
+}
+
+.notebookContainer {
+    
+}

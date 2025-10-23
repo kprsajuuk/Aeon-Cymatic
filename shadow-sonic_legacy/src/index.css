@@ -1,0 +1,73 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+div::-webkit-scrollbar, body::-webkit-scrollbar, ul::-webkit-scrollbar{
+  width: 8px;
+  height: 8px;
+}
+div::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb, ul::-webkit-scrollbar-thumb{
+  background: rgba(153,153,153,0.6);
+  border-radius: 20px;
+  right: -100px;
+}
+div::-webkit-scrollbar-track, body::-webkit-scrollbar-track, ul::-webkit-scrollbar-track{
+  background: #141414;
+  border-radius: 20px;
+}
+
+.flexColumn{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.link{
+  cursor: pointer;
+  color: #e5ce00;
+}
+
+.anticon.link{
+  color: #e5ce00;
+  font-size: 18px;
+}
+
+.link:hover{
+  opacity: 0.65;
+}
+
+.link + .link{
+  margin-left: 12px;
+}
+
+.highlightRow{
+  animation: dark-grey 3s infinite;
+}
+
+@keyframes dark-grey {
+  0% {background: #141414}
+  50% {background: rgba(222, 202, 4, 0.11)
+  }
+  100% {background: #141414}
+}
+
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ant-tabs-nav-wrap{
+  z-index: 1;
+}

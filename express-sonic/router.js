@@ -4,14 +4,15 @@ var albumMusic = require('./routes/albumMusic');
 var artistMusic = require('./routes/artistMusic');
 var artistAlbum = require('./routes/artistAlbum');
 var download = require('./routes/download');
-var test = require('./routes/test');
 
-module.exports = function (app) {
-	search(app);
-	albumMusic(app);
-	artistMusic(app);
-	artistAlbum(app);
-	download(app);
-	indexRouter(app);
-	test(app);
-};
+const express = require("express");
+
+const noteRoute = require('./routes/noteRoute');
+const test = require('./routes/test');
+
+const router = express.Router();
+
+router.use("/note", noteRoute);
+//router.use("/test", test);
+
+module.exports = router

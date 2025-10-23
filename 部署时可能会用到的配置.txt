@@ -1,0 +1,63 @@
+1. 安装Nginx
+# 安装EPEL仓库
+sudo yum install epel-release -y
+
+=========================
+
+# 安装Nginx
+sudo yum install nginx -y
+
+=========================
+
+2. 启动和启用Nginx
+# 启动Nginx服务
+sudo systemctl start nginx
+
+# 设置开机自启
+sudo systemctl enable nginx
+
+# 检查服务状态
+sudo systemctl status nginx
+
+=========================
+sudo systemctl start firewalld
+sudo systemctl enable firewalld
+sudo firewall-cmd --permanent --add-port=28063/tcp
+sudo firewall-cmd --permanent --add-port=28063/udp
+sudo firewall-cmd --reload
+
+3. 防火墙配置
+# 开放HTTP和HTTPS端口
+sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --permanent --add-service=https
+sudo firewall-cmd --reload
+
+# 或者直接开放80和443端口
+sudo firewall-cmd --permanent --add-port=80/tcp
+sudo firewall-cmd --permanent --add-port=443/tcp
+sudo firewall-cmd --reload
+
+#bwh的ssh端口用的28063，也可能是别的什么，总之最好提前开启防止无法访问
+sudo firewall-cmd --permanent --add-port=28063/tcp
+
+sudo firewall-cmd --list-ports
+
+=========================
+
+4. 基本配置
+主配置文件位置
+/etc/nginx/nginx.conf
+
+解压缩
+sudo yum install tar gzip bzip2 xz unzip -y
+unzip filename.zip
+
+node
+# 下载并安装NVM
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+# 重新加载bash配置
+source ~/.bashrc
+
+nginx前端文件地址:
+ /usr/share/nginx/html
+

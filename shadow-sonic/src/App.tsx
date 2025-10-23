@@ -1,23 +1,48 @@
-import React from 'react';
-import { ConfigProvider, theme } from 'antd';
-import Main from '@/pages/main/Main';
-import { Routes, Route } from "react-router";
-import { BrowserRouter } from "react-router-dom";
-
-import './App.css';
+import { useState, useRef } from 'react'
+import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom'
+import routes from './router/router';
+import Header from "@/pages/Header/Header";
+import Login from "@/pages/User/Login";
+//import logo from './assets/img/logo.png';
+import style from './App.module.scss';
 
 function App() {
     return (
-        <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
-            <div className="App">
+        <>
+            <div className={style.origin}>
                 <BrowserRouter>
-                    <Routes>
-                        <Route path={'/'} element={<Main />}/>
-                    </Routes>
+                    {PlatformApp()}
                 </BrowserRouter>
             </div>
-        </ConfigProvider>
-    );
+        </>
+    )
 }
 
-export default App;
+export default App
+
+function PlatformApp(){
+    const scrollContainerRef = useRef(null);
+
+    return (
+        <Routes>
+            <Route path="/login" element={<Login/>} />
+            <Route path="/cymatic/*" element={
+                <div className={style.main}>
+                    <div className={style.header} >
+                        <Header />
+                        {/* <Navigator/> */}
+                    </div>
+                    <div className={style.content} ref={scrollContainerRef}>
+                      <Routes>
+                          {routes.map((route, index) => (
+                              <Route key={index} path={route.path} element={route.element({scrollContainer: scrollContainerRef})} />
+                          ))}
+                      </Routes>
+                    </div>
+                </div>
+            } />
+            {/* <Route path="/*" element={<Navigate to="/code/asset/project" replace />} /> */}
+            <Route path="/*" element={<Navigate to="/cymatic/visual" replace />} />
+        </Routes>
+    )
+}
