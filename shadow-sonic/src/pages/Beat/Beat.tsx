@@ -26,10 +26,10 @@ function Component(){
     const baseChance = (complexity.value * 0.06);
 
     const rhyStyleOptions = [
-        { label: "简单节奏", value: "simple"},
-        { label: "摇滚节奏", value: "rock"},
-        { label: "爵士节奏", value: "jazz"},
-        { label: "完全随机", value: "random"},
+        { label: "Simple", value: "simple"},
+        { label: "Rock", value: "rock"},
+        { label: "Jazz", value: "jazz"},
+        { label: "Random", value: "random"},
     ]
 
     const downloadMidi = () => {
@@ -47,35 +47,35 @@ function Component(){
         <div className={style.main}>
             <div className={style.container} style={{width: 800, margin: "0 auto"}}>
                 <div className={style.box}>
-                    <div className={style.title}>节奏</div>
+                    <div className={style.title}>Rhythm</div>
                     <div className={style.subTitle}>BPM</div>
                     <NumberSlider value={bpm.value} min={bpm.min} max={bpm.max} onChange={v=>setBpm({...bpm, value: v})}/>
                 </div>
 
                 <div className={style.box}>
-                    <div className={style.title}>配置</div>
+                    <div className={style.title}>Setting</div>
                     <Row gutter={[20,20]}>
                         <Col span={12}>
-                            <div className={style.subTitle}>小节</div>
+                            <div className={style.subTitle}>Bar</div>
                             <NumberSlider value={bar.value} min={bar.min} max={bar.max} onChange={v=>setBar({...bar, value:v})}/>
-                            <div className={style.subTitle}>每小节steps</div>
+                            <div className={style.subTitle}>Steps each bar</div>
                             <NumberSlider value={stepsEachBar.value} min={stepsEachBar.min} max={stepsEachBar.max} onChange={v=>setStepsEachBar({...stepsEachBar, value: v})}/>
                             
                         </Col>
                         <Col span={12}>
-                            <div className={style.subTitle}>复杂度</div>
+                            <div className={style.subTitle}>Complexity</div>
                             <NumberSlider value={complexity.value} min={complexity.min} max={complexity.max} onChange={v=>setComplexity({...complexity, value: v})}/>
                             
                         </Col>
                         <Col span={12}>
-                            <div className={style.subTitle}>模式</div>
+                            <div className={style.subTitle}>Mode</div>
                             <Select options={rhyStyleOptions} value={rhyStyle} onChange={v=>setRhyStyle(v)} style={{width: 120, marginTop: 12}}/>
                         </Col>
                         <Col span={12}>
-                            <div className={style.subTitle} style={{textAlign: 'right'}}>操作</div>
+                            <div className={style.subTitle} style={{textAlign: 'right'}}>Action</div>
                             <div style={{textAlign: 'right', marginTop: 12}}>
-                                <Button type="primary" onClick={downloadMidi} style={{marginRight: 12}} disabled={pattern.length===0}>下载 MIDI</Button>
-                                <Button type="primary" onClick={generatePattern}>生成 pattern</Button>
+                                <Button type="primary" onClick={downloadMidi} style={{marginRight: 12}} disabled={pattern.length===0}>Download MIDI</Button>
+                                <Button type="primary" onClick={generatePattern}>Generate pattern</Button>
                             </div>
                         </Col>
                     </Row>

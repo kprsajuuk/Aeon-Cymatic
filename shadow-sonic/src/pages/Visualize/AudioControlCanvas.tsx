@@ -196,8 +196,8 @@ export default class AudioControl extends Component<IProps, IState>{
 
         const menuItems = [
             {label: "下载", key: "download", onClick: this.onDownload, disabled: !audioSource },
-            {label: <div><Space>循环<Switch onChange={(v)=>this.setState({loop: v})}/></Space></div>, key: "loopBtn"},
-            {label: <div><Space>效果<Switch onChange={this.onVisualChange}/></Space></div>, key: "visualBtn"},
+            {label: <div><Space>Loop<Switch onChange={(v)=>this.setState({loop: v})}/></Space></div>, key: "loopBtn"},
+            {label: <div><Space>Effect<Switch onChange={this.onVisualChange}/></Space></div>, key: "visualBtn"},
         ]
 
         const ActMenu = (

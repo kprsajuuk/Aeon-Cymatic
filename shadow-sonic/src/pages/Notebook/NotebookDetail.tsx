@@ -281,16 +281,16 @@ function Component(props){
             <div className={style.config} style={{marginBottom: 0}}>
                 <Row gutter={[20,20]} >
                     <Col span={12}>
-                        <div className={style.subTitle}>小节</div>
+                        <div className={style.subTitle}>Bar</div>
                         <NumberSlider value={bar.value} min={bar.min} max={bar.max} onChange={v=>setBar({...bar, value:v})}/>
                     </Col>
                     <Col span={12}>
                         <div style={{textAlign: 'right'}}>
-                            <Button onClick={downloadMidi} style={{marginRight: 12}} icon={<DownloadOutlined />}>下载 MIDI</Button>
+                            <Button onClick={downloadMidi} style={{marginRight: 12}} icon={<DownloadOutlined />}>Download MIDI</Button>
                         </div>
                     </Col>
                     <Col span={12}>
-                        <div className={style.subTitle}>速度</div>
+                        <div className={style.subTitle}>Speed</div>
                         <NumberSlider value={speed.value} min={speed.min} max={speed.max} onChange={v=>setSpeed({...speed, value:v})}/>
                     </Col>
                     <Col span={12}></Col>
@@ -305,8 +305,8 @@ function Component(props){
                     <Col span={12}>
                         <div className={style.subTitle} style={{textAlign: 'right', height: 24}}></div>
                         <div style={{textAlign: 'right', marginTop: 12}}>
-                            <Button icon={playStatus.play ? <PauseCircleOutlined /> : <PlayCircleOutlined />} onClick={onClickPlay} style={{marginRight: 12}}>{playStatus.play ? "停止" : "播放"}</Button>
-                            <Button type="primary" onClick={saveScore} style={{marginRight: 12}}>保存</Button>
+                            <Button icon={playStatus.play ? <PauseCircleOutlined /> : <PlayCircleOutlined />} onClick={onClickPlay} style={{marginRight: 12}}>{playStatus.play ? "Stop" : "Play"}</Button>
+                            <Button type="primary" onClick={saveScore} style={{marginRight: 12}}>Save</Button>
                         </div>
                     </Col>
                 </Row>

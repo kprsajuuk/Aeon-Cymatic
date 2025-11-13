@@ -9,7 +9,7 @@ function Component(props){
         onGraphTypeChange, onSwitchPlay, onAudioFile, onVolumnChange, onLoopChange, onVisualChange, onTimeChange
     } = props;
     const [visible, setVisible] = useState(false);
-    const [fileName, setFileName] = useState("未选择文件");
+    const [fileName, setFileName] = useState("Upload Music");
     const { current=0, duration=10 } = progress;
     const onPlay = () => {
         onSwitchPlay();
@@ -23,8 +23,8 @@ function Component(props){
 
     const menuItems = [
         // {label: "下载", key: "download", onClick: onDownload, disabled: !audioSource },
-        {label: <div><Space>循环<Switch checked={loop} onChange={onLoopChange}/></Space></div>, key: "loopBtn"},
-        {label: <div><Space>效果<Switch checked={visual} onChange={onVisualChange}/></Space></div>, key: "visualBtn"},
+        {label: <div><Space>Loop<Switch checked={loop} onChange={onLoopChange}/></Space></div>, key: "loopBtn"},
+        {label: <div><Space>Effect<Switch checked={visual} onChange={onVisualChange}/></Space></div>, key: "visualBtn"},
     ]
 
     const graphTypeList = [
@@ -60,7 +60,7 @@ function Component(props){
                 onChange={onTimeChange}/>
             {/* <Progress strokeColor="#faad14" style={{marginLeft: 20, width: '100%'}} percent={100*current/duration} showInfo={false} size={{height: 10}}/> */}
             
-            <Select style={{width: 100, marginLeft: 12, flexShrink: 0}} options={graphTypeList} value={graphType} onChange={onGraphTypeChange}/>
+            <Select style={{width: 120, marginLeft: 12, flexShrink: 0}} options={graphTypeList} value={graphType} onChange={onGraphTypeChange}/>
 
             <Popover placement="bottomRight" content={Volume}>
                 <MutedFilled style={{color:"#faad14", cursor: 'pointer', flexShrink: 0, marginLeft: 12}}/>

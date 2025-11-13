@@ -19,7 +19,7 @@ const items: MenuProps['items'] = [
     { label: menuLabel("MIDIbook"), key: 'notebook' },
 ];
 const labelList = [
-    {label: "注销", key: "logout"},
+    {label: "Logout", key: "logout"},
 ]
 
 function Component(){
