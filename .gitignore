@@ -4,3 +4,9 @@ shadow-sonic/.idea/
 shadow-sonic/node_modules/
 shadow-sonic/build
 package-lock.json
+Centos7部署的一些问题.txt
+CentOS-Base.repo
+CentOS-SCLo-scl.repo
+CentOS-SCLo-scl-rh.repo
+nginx.conf
+部署时可能会用到的配置.txt
