@@ -8,7 +8,7 @@ Aeon Cymatic integrates multiple experimental music utilities into a single, coh
 
 ## 🌐 Live Demo
 
-**Temporary URL:** https://172.96.193.131
+**Temporary URL:** http://172.96.193.131
 
 ## 🚀 Technology Stack
 **Architecture:** Browser-Server (BS)
