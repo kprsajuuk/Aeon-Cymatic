@@ -177,10 +177,137 @@ function createParticles(count, canvas) {
 }
 
 
+function DrawBlackHole(analyser, dataArray, ctx, canvas, bufferLength) {
+    analyser.getByteFrequencyData(dataArray);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const centerX = canvas.width / (windowRatio * 2);
+    const centerY = canvas.height / (windowRatio * 2);
+
+    const horizonRadius = 90;      // 黑洞视界
+    const diskRadiusX = 220;       // 吸积盘椭圆
+    const diskRadiusY = 80;
+
+    const bars = bufferLength;
+    const half = Math.floor(bars / 2);
+
+    const startAngle = -Math.PI;
+    const endAngle = Math.PI;
+
+    //--------------------------------
+    // 1️⃣ 画吸积盘后半部分
+    //--------------------------------
+    for (let i = 0; i < half; i++) {
+
+        const angle = startAngle + (i / bars) * (endAngle - startAngle);
+        if (Math.sin(angle) < 0) continue; // 后半部分
+
+        const audio = dataArray[i] / 255;
+        const height = audio * 120;
+
+        const x = centerX + Math.cos(angle) * diskRadiusX;
+        const y = centerY + Math.sin(angle) * diskRadiusY;
+
+        const nx = Math.cos(angle);
+        const ny = Math.sin(angle) * (diskRadiusY / diskRadiusX);
+
+        const x2 = x + nx * height;
+        const y2 = y + ny * height;
+
+        const gradient = ctx.createLinearGradient(x, y, x2, y2);
+        gradient.addColorStop(0, "#faad14");
+        gradient.addColorStop(1, "#613400");
+
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 4;
+
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+    }
+
+    //--------------------------------
+    // 2️⃣ 黑洞视界
+    //--------------------------------
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, horizonRadius, 0, Math.PI * 2);
+    ctx.fillStyle = "black";
+    ctx.fill();
+
+    ctx.strokeStyle = "#faad14";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    //--------------------------------
+    // 3️⃣ 事件视界向内的频谱
+    //--------------------------------
+    for (let i = 0; i < bars; i++) {
+
+        const angle = (i / bars) * Math.PI * 2;
+
+        const audio = dataArray[i] / 255;
+        const height = audio * 80;
+
+        const x1 = centerX + Math.cos(angle) * horizonRadius;
+        const y1 = centerY + Math.sin(angle) * horizonRadius;
+
+        const x2 = centerX + Math.cos(angle) * (horizonRadius - height);
+        const y2 = centerY + Math.sin(angle) * (horizonRadius - height);
+
+        const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+        gradient.addColorStop(0, "#faad14");
+        gradient.addColorStop(1, "#613400");
+
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 3;
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+    }
+
+    //--------------------------------
+    // 4️⃣ 吸积盘前半部分
+    //--------------------------------
+    for (let i = 0; i < half; i++) {
+
+        const angle = startAngle + (i / bars) * (endAngle - startAngle);
+        if (Math.sin(angle) >= 0) continue; // 前半部分
+
+        const audio = dataArray[i] / 255;
+        const height = audio * 120;
+
+        const x = centerX + Math.cos(angle) * diskRadiusX;
+        const y = centerY + Math.sin(angle) * diskRadiusY;
+
+        const nx = Math.cos(angle);
+        const ny = Math.sin(angle) * (diskRadiusY / diskRadiusX);
+
+        const x2 = x + nx * height;
+        const y2 = y + ny * height;
+
+        const gradient = ctx.createLinearGradient(x, y, x2, y2);
+        gradient.addColorStop(0, "#faad14");
+        gradient.addColorStop(1, "#613400");
+
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 4;
+
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+    }
+}
+
+
 export {
     DrawSpectrum,
     DrawWaveform,
     DrawCircularSpectrum,
     DrawParticles,
-    createParticles
+    createParticles,
+    DrawBlackHole
 }

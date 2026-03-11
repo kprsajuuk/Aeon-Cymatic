@@ -1,7 +1,7 @@
 import { Button, Progress, Popover, Slider, Radio, Row, Col } from "antd";
 import { CaretRightOutlined, PauseOutlined, EllipsisOutlined, SettingOutlined, StepForwardOutlined } from '@ant-design/icons';
 import { useState, useRef, useEffect } from "react";
-import { DrawSpectrum, DrawWaveform, DrawCircularSpectrum, DrawParticles, createParticles } from './CanvasFunction'
+import { DrawSpectrum, DrawWaveform, DrawCircularSpectrum, DrawParticles, createParticles, DrawBlackHole } from './CanvasFunction'
 
 let mouse = { x: null, y: null };
 
@@ -60,6 +60,8 @@ function Component(props){
                 DrawCircularSpectrum(analyserRef.current, dataArray, ctx, canvas, bufferLength, circularType);
             } else if (graphType === "particle") {
                 DrawParticles(analyserRef.current, dataArray, ctx, canvas, bufferLength, particles, mouse, particleType);
+            } else if (graphType === "blackhole") {
+                DrawBlackHole(analyserRef.current, dataArray, ctx, canvas, bufferLength);
             }
         };
 
@@ -76,6 +78,8 @@ function Component(props){
             } else if (graphType === "circular") {
                 analyserRef.current.fftSize = circularSize;
             } else if (graphType === "particle") {
+                analyserRef.current.fftSize = particleSize;
+            } else if (graphType === "blackhole") {
                 analyserRef.current.fftSize = particleSize;
             }
         }

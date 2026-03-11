@@ -32,6 +32,7 @@ function Component(props){
         {label: "Waveform", value: "waveform"}, 
         {label: "Circular", value: "circular"}, 
         {label: "Particle", value: "particle"}, 
+        {label: "Blackhole", value: "blackhole"}, 
     ]
 
     return (
